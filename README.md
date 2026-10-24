@@ -1,7 +1,7 @@
 # [Project Title: Digital University System]
 
 ## Project Overview
-[Briefly describe the purpose and objectives of this project. For example: This project implements a digital twin of a university ecosystem, utilizing role-based access control to manage the interactions between Administrators, Faculty, and Students. The objective is to demonstrate a secure, compartmentalized architecture using Java Swing.]
+This project implements a digital twin of a university ecosystem, utilizing role-based access control to manage the interactions between Administrators, Faculty, and Students. The objective is to demonstrate a secure, compartmentalized architecture using Java Swing.
 
 **Key Features Implemented:**
 *   Role-based authentication and authorization.
@@ -26,7 +26,7 @@
 
 ### Prerequisites
 *   **Java:** JDK [Insert Version, e.g., 19] or higher.
-*   **IDE:** Apache NetBeans [Insert Version, e.g., 16] (recommended for Swing UI compilation).
+*   **IDE:** Apache NetBeans 16 (recommended for Swing UI compilation).
 *   **Version Control:** Git.
 
 ### Setup Steps
@@ -107,3 +107,13 @@ The application features a secure login screen where users input their assigned 
 *   **Database Integration:** Transition from volatile memory (ArrayLists) to a persistent database.
 *   **Advanced Analytics:** Implement charting libraries to visualize university revenue and student performance trends over time.
 *   **Enhanced Employer Portal:** Build out the `EmployerProfile` UI to allow companies to directly recruit students based on their transcripts and high-impact courses.
+
+---
+
+## Contribution Breakdown:
+| Name |Contribution |
+| :--- | :--- |
+| **Astrid Noizillier** | Administrator Use Case |
+| **Kinder Izzo Celemin** | Faculty Use Case | 
+| **Mayu Rocha Yamada** | Student Use Case |
+
