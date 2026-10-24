@@ -113,7 +113,7 @@ The application features a secure login screen where users input their assigned 
 ## Contribution Breakdown:
 | Name |Contribution |
 | :--- | :--- |
-| **Astrid Noizillier** | Administrator Use Case |
-| **Kinder Izzo Celemin** | Faculty Use Case | 
-| **Mayu Rocha Yamada** | Student Use Case |
+| **Astrid Noizillier** | Adv Programmer|
+| **Kinder Izzo Celemin** | Coordinator | 
+| **Mayu Rocha Yamada** | Programmer |
 
