@@ -55,19 +55,19 @@ The application features a secure login screen where users input their assigned 
 
 ## Features Implemented & Contribution Breakdown
 
-### Administrator Use Case (Implemented by Astrid Noizillier)
+### Administrator Use Case 1 (Implemented by Kinder Izzo Celemin)
 *   **Administer User Accounts:** Full CRUD capabilities for user logins via `ManageUserAccountsJPanel` and `AdminUserAccount`.
 *   **Register Persons (HR):** Ability to add new identities to the system via `ManagePersonsJPanel` and `AdministerPersonJPanel`.
 *   **Manage Student/Faculty Records:** Capability to update, delete, or view academic and staff data.
 *   **Manage Own Profile:** Admin profile updates via `AdminMyProfileJPanel`.
 
-### Faculty Use Case (Implemented by Kinder Izzo Celemin)
+### Faculty Use Case 2 (Implemented by Astrid Noizillier)
 *   **Manage Courses:** View and update specific class details within the `CourseSchedule`.
 *   **Manage Own Profile:** Update personal faculty details.
 *   **Performance Reports:** Generate reports based on student grades within assigned classes.
 *   **View Student Profiles:** Review academic progress and interests of enrolled students.
 
-### Student Use Case (Implemented by Mayu Rocha Yamada)
+### Student Use Case 3 (Implemented by Mayu Rocha Yamada)
 *   **Manage Coursework:** Track progress and submit assignments.
 *   **Class Registration:** Enroll in or drop courses by claiming a `SeatAssignment` in a `CourseOffer`.
 *   **Graduation Audit:** Track core and elective credits against `Degree` requirements.
