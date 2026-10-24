@@ -17,7 +17,7 @@
 | Name | Role / Use Case | NUID |
 | :--- | :--- | :--- |
 | **Astrid Noizillier** | Administrator Use Case | [Insert NUID] |
-| **Kinder Izzo Celemin** | Faculty Use Case | [Insert NUID] |
+| **Kinder Izzo Celemin** | Faculty Use Case | 003947783 |
 | **Mayu Rocha Yamada** | Student Use Case | [Insert NUID] |
 
 ---
