@@ -20,6 +20,11 @@ import Business.UserAccounts.UserAccountDirectory;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import University.Department.Department;
+import University.CourseCatalog.Course;
+import University.CourseSchedule.CourseSchedule;
+import University.CourseSchedule.CourseOffer;
+
 /**
  *
  * @author kal bugrara
@@ -87,6 +92,18 @@ class ConfigureABusiness {
                 true,
                 new GregorianCalendar(2026, Calendar.SEPTEMBER, 15, 14, 30).getTime(),
                 new GregorianCalendar(2026, Calendar.SEPTEMBER, 15, 14, 30).getTime()); /// order products for one of the customers and performed by a sales person
+
+        
+        //Bootstrapping University Mode
+        Department dept = business.getPrimaryDepartment();
+       
+        // 1. Create a Course in the Catalog
+        Course course1 = dept.newCourse("Application Engineering", "INFO5100", 4);
+        // 2. Create a Semester Schedule
+        CourseSchedule scheduleFall2026 = dept.newCourseSchedule("Fall2026");
+        // 3. Create a Course Offer for that schedule
+        CourseOffer offer1 = scheduleFall2026.newCourseOffer("INFO5100");
+        offer1.generatSeats(30); // Open 30 seats
 
         return business;
 

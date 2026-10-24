@@ -9,8 +9,8 @@ import Business.Person.PersonDirectory;
 import Business.Profiles.EmployeeDirectory;
 import Business.Profiles.FacultyDirectory;
 import Business.Profiles.StudentDirectory;
-
 import Business.UserAccounts.UserAccountDirectory;
+import University.Department.Department;
 import java.util.ArrayList;
 
 /**
@@ -27,6 +27,8 @@ public class Business {
     StudentDirectory studentdirectory;
     FacultyDirectory facultydirectory;
     
+    Department primaryDepartment;
+    
     public Business(String n) {
         name = n;
 
@@ -36,7 +38,7 @@ public class Business {
         studentdirectory = new StudentDirectory();
         facultydirectory = new FacultyDirectory();
 
-
+        primaryDepartment = new Department("College of Engineering");
     }
 
     public PersonDirectory getPersonDirectory() {
@@ -58,6 +60,10 @@ public class Business {
     
     public FacultyDirectory getFacultyDirectory() {
         return facultydirectory;
+    }
+    
+    public Department getPrimaryDepartment() {
+        return primaryDepartment;
     }
 
 }
