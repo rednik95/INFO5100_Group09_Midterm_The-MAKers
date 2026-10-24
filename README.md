@@ -99,7 +99,7 @@ The application features a secure login screen where users input their assigned 
 ## Challenges & Solutions
 
 *   **Challenge #1:** Organizing the folder structure to prevent messy import statements across different packages.
-*   **Solution #1:** We ran a mass refactoring script to clean the package structure, consolidating the backend into a clean `University.*` package format not the info5100.university.example.<class>.<package>. Right-click the project and select **Clean and Build**. Ensure all `import University.*;` statements resolve correctly.
+*   **Solution #1:** We ran a mass refactoring script to clean the package structure, consolidating the backend into a clean `University.*` package format not the `info5100.university.example.<class>.<package>.` Right-click the project and select **Clean and Build**. Ensure all `import University.*;` statements resolve correctly.
 
 ---
 
