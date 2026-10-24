@@ -32,7 +32,7 @@
 ### Setup Steps
 1.  **Clone the Repository:**
     ```bash
-    git clone [https://github.com/rednik95/INFO5100_Group09_Midterm_The-MAKers.git](https://github.com/rednik95/INFO5100_Group09_Midterm_The-MAKers.git)
+    git clone https://github.com/rednik95/INFO5100_Group09_Midterm_The-MAKers.git
     cd INFO5100_Group09_Midterm_The-MAKers
     ```
 2.  **Open in IDE:** Open the project folder in Apache NetBeans.
@@ -99,10 +99,10 @@ The application features a secure login screen where users input their assigned 
 
 ## Challenges & Solutions
 
-*   **Challenge:** Integrating the provided University Model backend with the Access Control UI without causing `NullPointerExceptions` during panel transitions.
-*   **Solution:** We decoupled the account creation process. Admins now pre-register a `Person` first, and Students "claim" that account via the `SignUpJPanel`, ensuring all objects are instantiated before they are accessed.
+*   **Challenge:** paragaph
+*   **Solution:** paragaph
 *   **Challenge:** Organizing the folder structure to prevent messy import statements across different packages.
-*   **Solution:** We ran a mass refactoring script to clean the package structure, consolidating the backend into a clean `University.*` package format.
+*   **Solution:** We ran a mass refactoring script to clean the package structure, consolidating the backend into a clean `University.*` package format not the info5100.university.example.<class>.<package>.
 
 ---
 
