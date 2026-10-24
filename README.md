@@ -1,4 +1,4 @@
-# [Project Title: Digital University System]
+# Digital University System
 
 ## Project Overview
 This project implements a digital twin of a university ecosystem, utilizing role-based access control to manage the interactions between Administrators, Faculty, and Students. The objective is to demonstrate a secure, compartmentalized architecture using Java Swing.
@@ -16,8 +16,8 @@ This project implements a digital twin of a university ecosystem, utilizing role
 ## Team Information
 | Name | Role / Use Case | NUID |
 | :--- | :--- | :--- |
-| **Astrid Noizillier** | Administrator Use Case | [Insert NUID] |
-| **Kinder Izzo Celemin** | Faculty Use Case | 003947783 |
+| **Kinder Izzo Celemin** | Administrator Use Case | 003947783 |
+| **Astrid Noizillier** | Faculty Use Case | [Insert NUID] |
 | **Mayu Rocha Yamada** | Student Use Case | [Insert NUID] |
 
 ---
