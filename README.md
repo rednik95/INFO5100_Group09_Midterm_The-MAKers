@@ -36,7 +36,6 @@
     cd INFO5100_Group09_Midterm_The-MAKers
     ```
 2.  **Open in IDE:** Open the project folder in Apache NetBeans.
-3.  **Resolve Imports (If necessary):** Right-click the project and select **Clean and Build**. Ensure all `import University.*;` statements resolve correctly.
 4.  **Run the Application:** Navigate to `src/Business/ProfileWorkAreaMainFrame.java`, right-click the file, and select **Run File**.
 
 ---
@@ -99,10 +98,8 @@ The application features a secure login screen where users input their assigned 
 
 ## Challenges & Solutions
 
-*   **Challenge:** paragaph
-*   **Solution:** paragaph
-*   **Challenge:** Organizing the folder structure to prevent messy import statements across different packages.
-*   **Solution:** We ran a mass refactoring script to clean the package structure, consolidating the backend into a clean `University.*` package format not the info5100.university.example.<class>.<package>.
+*   **Challenge #1:** Organizing the folder structure to prevent messy import statements across different packages.
+*   **Solution #1:** We ran a mass refactoring script to clean the package structure, consolidating the backend into a clean `University.*` package format not the info5100.university.example.<class>.<package>. Right-click the project and select **Clean and Build**. Ensure all `import University.*;` statements resolve correctly.
 
 ---
 
