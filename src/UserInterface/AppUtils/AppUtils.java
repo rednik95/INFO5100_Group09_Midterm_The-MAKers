@@ -20,9 +20,11 @@ final public class AppUtils {
     private AppUtils() {
     }
 
+    //Used for stating status in a combo box
     public static final String STATUS_ACTIVE = "Active";
     public static final String STATUS_INACTIVE = "Inactive";
 
+    //used for stating role in a combo box
     public static final String ROLE_STUDENT = "Student";
     public static final String ROLE_FACULTY = "Faculty";
     public static final String ROLE_ADMIN = "Admin";
@@ -38,6 +40,7 @@ final public class AppUtils {
         ).format(date);
     }
 
+    //Produce a Short Date format
     public static String getDatePattern() {
         DateFormat df = DateFormat.getDateInstance(
                 DateFormat.SHORT,
@@ -47,6 +50,7 @@ final public class AppUtils {
         return ((SimpleDateFormat) df).toPattern();
     }
 
+    //Wng Message for save confirmation
     public static int confirmChange(Component window) {
         int choice = JOptionPane.showConfirmDialog(
                 window,
@@ -56,7 +60,8 @@ final public class AppUtils {
         );
         return choice;
     }
-
+    
+    //Wng Message to confirm if no save is ok
     public static int cancelChange(Component window) {
         int choice = JOptionPane.showConfirmDialog(
                 window,
@@ -66,7 +71,8 @@ final public class AppUtils {
         );
         return choice;
     }
-
+    
+    //Wng Message in regards to missing field
     public static void missingFields(Component window, String fieldName) {
         JOptionPane.showMessageDialog(
                 window,
@@ -75,7 +81,8 @@ final public class AppUtils {
                 JOptionPane.WARNING_MESSAGE
         );
     }
-
+    
+    //Validation that Save was successful
     public static void saveSuccess(Component window, String entity, String id) {
         JOptionPane.showMessageDialog(
                 window,
@@ -84,7 +91,8 @@ final public class AppUtils {
                 JOptionPane.INFORMATION_MESSAGE
         );
     }
-
+    
+    //Wng Message if passsword do not match
     public static void passwordMismatch(Component window) {
         JOptionPane.showMessageDialog(
                 window,
@@ -93,7 +101,8 @@ final public class AppUtils {
                 JOptionPane.WARNING_MESSAGE
         );
     }
-
+    
+    //Wng Message to confirm delettion of selected items
     public static boolean confirmDelete(java.awt.Component parent) {
         return javax.swing.JOptionPane.showConfirmDialog(
                 parent,
@@ -104,6 +113,7 @@ final public class AppUtils {
         ) == javax.swing.JOptionPane.YES_OPTION;
     }
 
+    //Validation that DELETE was successful
     public static void deleteSuccess(Component parent) {
         JOptionPane.showMessageDialog(
                 parent,
