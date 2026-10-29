@@ -9,6 +9,7 @@ import Business.Business;
 import Business.Person.Person;
 import Business.Profiles.EmployeeProfile;
 import Business.Profiles.Profile;
+import Business.Profiles.StudentProfile;
 import Business.UserAccounts.UserAccount;
 import UserInterface.AppUtils.AppUtils;
 import java.util.Date;
@@ -20,7 +21,7 @@ import javax.swing.SpinnerDateModel;
 
 /**
  *
- * @author kal bugrara
+ * @author Kinder Izzo Celemin
  */
 public class ManagePersonsJPanel extends javax.swing.JPanel {
 
@@ -42,7 +43,8 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
         roleCombo.removeAllItems();
         roleCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
             AppUtils.ROLE_ADMIN,
-            AppUtils.ROLE_FACULTY
+            AppUtils.ROLE_FACULTY,
+            AppUtils.ROLE_STUDENT
         }));
 
         hireDateSpinner.setModel(new SpinnerDateModel());
@@ -209,17 +211,30 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
 
     private void NextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextActionPerformed
 
-        // Validate required fields
-        if (firstNameTextField.getText().trim().isEmpty()
-                || lastNameTextField.getText().trim().isEmpty()
-                || emailTextField.getText().trim().isEmpty()
-                || phoneNumberTextField.getText().trim().isEmpty()
-                || usernameTextField.getText().trim().isEmpty()
-                || jobTitleTextField.getText().trim().isEmpty()
-                || departmentTextField.getText().trim().isEmpty()) {
+        String role = roleCombo.getSelectedItem().toString();
+        String firstName = firstNameTextField.getText().trim();
+        String lastName = lastNameTextField.getText().trim();
+        String email = emailTextField.getText().trim();
+        String phone = phoneNumberTextField.getText().trim();
+        String username = usernameTextField.getText().trim(); // This acts as NUID for students
+        String jobTitle = jobTitleTextField.getText().trim();
+        String department = departmentTextField.getText().trim();
 
-            AppUtils.missingFields(this, "All fields");
-            return;
+        // 1. ROLE-BASED VALIDATION (Fixes the "fill all fields" error for Students)
+        if (AppUtils.ROLE_STUDENT.equals(role)) {
+            // Students only require Name and NUID (Username field)
+            if (firstName.isEmpty() || lastName.isEmpty() || username.isEmpty()) {
+                AppUtils.missingFields(this, "First Name, Last Name, and NUID");
+                return;
+            }
+        } else {
+            // Admin and Faculty require all fields
+            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()
+                    || phone.isEmpty() || username.isEmpty()
+                    || jobTitle.isEmpty() || department.isEmpty()) {
+                AppUtils.missingFields(this, "All fields");
+                return;
+            }
         }
 
         if (passwordField.getPassword().length == 0) {
@@ -230,10 +245,10 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
         if (!java.util.Arrays.equals(
                 passwordField.getPassword(),
                 confirmPasswordField.getPassword())) {
+            
             AppUtils.passwordMismatch(this);
             return;
         }
-        String username = usernameTextField.getText().trim();
 
         if (business.getUserAccountDirectory().usernameExists(username, null)) {
             javax.swing.JOptionPane.showMessageDialog(
@@ -247,43 +262,65 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
 
         // Create person
         Person person = business.getPersonDirectory().newPerson(
-                firstNameTextField.getText().trim(),
-                lastNameTextField.getText().trim(),
-                emailTextField.getText().trim(),
-                phoneNumberTextField.getText().trim()
+                firstName,
+                lastName,
+                email,
+                phone
         );
 
         // Create profile according to selected role
         Profile profile;
 
-        if (AppUtils.ROLE_ADMIN.equals(roleCombo.getSelectedItem())) {
-
+        // Create Profile ADMIN
+        if (AppUtils.ROLE_ADMIN.equals(role)) {
             profile = business.getEmployeeDirectory().newEmployeeProfile(
                     person,
-                    departmentTextField.getText().trim(),
-                    jobTitleTextField.getText().trim(),
+                    department,
+                    jobTitle,
                     (Date) hireDateSpinner.getValue()
             );
+            // Create user account
+            business.getUserAccountDirectory().newUserAccount(
+                    profile,
+                    username,
+                    new String(passwordField.getPassword()),
+                    AppUtils.STATUS_ACTIVE.equals(statusCombo.getSelectedItem()),
+                    null,
+                    new Date()
+            );
+        } 
+        // Create Profile STUDENT
+        else if (AppUtils.ROLE_STUDENT.equals(role)) {
+            // 1. Create it specifically as a StudentProfile first (Note: we use 'jobTitle' here because that's the text field acting as Major)
+            StudentProfile studentProfile = business.getStudentDirectory().newStudentProfile(
+                    person, 
+                    username, 
+                    jobTitle
+            );
 
-        } else {
+            // 2. Set the activation code
+            studentProfile.setActivationCode(new String(passwordField.getPassword()));
 
+        }
+        
+        // Create Profile Faculty
+        else {
             profile = business.getFacultyDirectory().newFacultyProfile(
                     person,
-                    departmentTextField.getText().trim(),
-                    jobTitleTextField.getText().trim(),
+                    department,
+                    jobTitle,
                     (Date) hireDateSpinner.getValue()
             );
+            // Create user account
+            business.getUserAccountDirectory().newUserAccount(
+                    profile,
+                    username,
+                    new String(passwordField.getPassword()),
+                    AppUtils.STATUS_ACTIVE.equals(statusCombo.getSelectedItem()),
+                    null,
+                    new Date()
+            );
         }
-
-        // Create user account
-        business.getUserAccountDirectory().newUserAccount(
-                profile,
-                usernameTextField.getText().trim(),
-                new String(passwordField.getPassword()),
-                AppUtils.STATUS_ACTIVE.equals(statusCombo.getSelectedItem()),
-                null,
-                new Date()
-        );
 
         javax.swing.JOptionPane.showMessageDialog(
                 this,
@@ -297,11 +334,49 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_NextActionPerformed
 
     private void roleComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_roleComboActionPerformed
-        if (AppUtils.ROLE_FACULTY.equals(roleCombo.getSelectedItem())) {
+        
+        if (roleCombo.getSelectedItem() == null) return;
+        String selectedRole = roleCombo.getSelectedItem().toString();
+        
+        if (AppUtils.ROLE_STUDENT.equals(selectedRole)) {
+            // Convert fields for Student
+            jobTitleLabel.setText("Major");
+            usernameLabel.setText("NUID");
+            passwordLabel.setText("Activation Code:");
+            confirmPasswordLabel.setText("Confirm Activation Code");
+            
+            // Hide Hire Date + Department
+            hireDateLabel.setVisible(false);
+            hireDateSpinner.setVisible(false);
+            jLabel5.setVisible(false);
+            departmentTextField.setVisible(false);
+            
+        } else if (AppUtils.ROLE_FACULTY.equals(selectedRole)) {
+            // Convert fields for Faculty
             jobTitleLabel.setText("Subject");
+            jLabel5.setText("Department");
+            passwordLabel.setText("Password:");
+            confirmPasswordLabel.setText("Confirm Password");
+            
+            // Show Hire Date + Department
+            hireDateLabel.setVisible(true);
+            hireDateSpinner.setVisible(true);
+            jLabel5.setVisible(true);
+            departmentTextField.setVisible(true);
+            
         } else {
+            // Convert fields for Admin/Employee
             jobTitleLabel.setText("Job Title");
-        }
+            jLabel5.setText("Department");
+            passwordLabel.setText("Password:");
+            confirmPasswordLabel.setText("Confirm Password");
+            
+            // Show Hire Date + Department
+            hireDateLabel.setVisible(true);
+            hireDateSpinner.setVisible(true);
+            jLabel5.setVisible(true);
+            departmentTextField.setVisible(true);
+        }              
     }//GEN-LAST:event_roleComboActionPerformed
 
 
