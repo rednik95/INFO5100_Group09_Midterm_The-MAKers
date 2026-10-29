@@ -31,13 +31,13 @@ public class StudentAcademicModel {
 
         private String courseNumber;
         private String courseName;
-        private  double   credits;
+        private double credits;
         private String semester;
         private String requirementType; // "Core" or "Elective"
         private String instructor;
         private String grade;           // "A", "A-", "B+", "In Progress", etc.
         private String assignmentText;
-        private  double   progressPercent;
+        private double progressPercent;
 
         /**
          * Constructs a new StudentCourseRecord with all academic attributes.
@@ -45,13 +45,13 @@ public class StudentAcademicModel {
         public StudentCourseRecord(
                 String courseNumber, 
                 String courseName, 
-                double  credits,
+                double credits,
                 String semester, 
                 String requirementType, 
                 String instructor,
                 String grade, 
                 String assignmentText, 
-                double  progressPercent) {
+                double progressPercent) {
             this.courseNumber = courseNumber;
             this.courseName = courseName;
             this.credits = credits;
@@ -79,7 +79,7 @@ public class StudentAcademicModel {
             this.courseName = courseName;
         }
 
-        public  double   getCredits() {
+        public double getCredits() {
             return credits;
         }
 
@@ -127,7 +127,7 @@ public class StudentAcademicModel {
             this.assignmentText = assignmentText;
         }
 
-        public  double   getProgressPercent() {
+        public double getProgressPercent() {
             return progressPercent;
         }
 
@@ -139,7 +139,7 @@ public class StudentAcademicModel {
          * Converts a letter grade into its corresponding grade point value for GPA calculations.
          * @return numerical grade points, or -1.0 if the course is "In Progress".
          */
-        public  double   getGradePoints() {
+        public double getGradePoints() {
             if (grade == null) {
                 return -1.0;
             }
@@ -171,17 +171,17 @@ public class StudentAcademicModel {
 
         private String courseNumber;
         private String courseName;
-        private  double   credits;
+        private double credits;
         private String semester;
         private String requirementType;
         private String instructor;
-        private  double   seatsAvailable;
+        private double seatsAvailable;
 
         /**
          * Constructs an OfferingEntry with scheduling and capacity details.
          */
-        public OfferingEntry(String courseNumber, String courseName,  double   credits,
-                String semester, String requirementType, String instructor,  double   seatsAvailable) {
+        public OfferingEntry(String courseNumber, String courseName, double credits,
+                String semester, String requirementType, String instructor, double seatsAvailable) {
             this.courseNumber = courseNumber;
             this.courseName = courseName;
             this.credits = credits;
@@ -199,7 +199,7 @@ public class StudentAcademicModel {
             return courseName;
         }
 
-        public  double   getCredits() {
+        public double getCredits() {
             return credits;
         }
 
@@ -215,7 +215,7 @@ public class StudentAcademicModel {
             return instructor;
         }
 
-        public  double   getSeatsAvailable() {
+        public double getSeatsAvailable() {
             return seatsAvailable;
         }
 
@@ -277,7 +277,7 @@ public class StudentAcademicModel {
      * @return 
      */
     public static double getCompletedCredits(StudentProfile sp) {
-        double   sum = 0;
+       double sum = 0;
         for (StudentCourseRecord r : getRecordsForStudent(sp)) {
             if (!"In Progress".equalsIgnoreCase(r.getGrade())) {
                 sum += r.getCredits();
@@ -322,10 +322,10 @@ public class StudentAcademicModel {
      * @return 
      */
     public static double calculateCumulativeGPA(StudentProfile sp) {
-         double   qualityPoints = 0.0;
+        double qualityPoints = 0.0;
         double  gradedCredits = 0;
         for (StudentCourseRecord r : getRecordsForStudent(sp)) {
-             double   gp = r.getGradePoints();
+            double gp = r.getGradePoints();
             if (gp >= 0.0) {
                 qualityPoints += (gp * r.getCredits());
                 gradedCredits += r.getCredits();
