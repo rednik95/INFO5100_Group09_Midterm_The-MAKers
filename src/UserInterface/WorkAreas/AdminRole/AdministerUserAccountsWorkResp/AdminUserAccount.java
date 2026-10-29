@@ -5,7 +5,7 @@
  */
 package UserInterface.WorkAreas.AdminRole.AdministerUserAccountsWorkResp;
 
-import UserInterface.WorkAreas.AdminRole.ManagePersonnelWorkResp.*;
+
 import Business.Business;
 import Business.Person.Person;
 import Business.Profiles.EmployeeProfile;
@@ -23,7 +23,7 @@ import javax.swing.SpinnerDateModel;
 
 /**
  *
- * @author kal bugrara
+ * @author Kinder Izzo Celemin
  */
 public class AdminUserAccount extends javax.swing.JPanel {
 
@@ -49,7 +49,9 @@ public class AdminUserAccount extends javax.swing.JPanel {
 
         roleCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
             AppUtils.ROLE_ADMIN,
-            AppUtils.ROLE_FACULTY
+            AppUtils.ROLE_FACULTY,
+            AppUtils.ROLE_STUDENT
+                
         }));
 
         hireDateSpinner.setModel(new SpinnerDateModel());
@@ -134,7 +136,7 @@ public class AdminUserAccount extends javax.swing.JPanel {
         Next.setBounds(500, 370, 80, 23);
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        jLabel2.setText("Admin User Account");
+        jLabel2.setText("Admin User Accounts");
         add(jLabel2);
         jLabel2.setBounds(21, 20, 550, 28);
 

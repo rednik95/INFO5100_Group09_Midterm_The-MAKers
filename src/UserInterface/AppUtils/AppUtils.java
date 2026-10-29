@@ -28,7 +28,7 @@ final public class AppUtils {
     public static final String ROLE_STUDENT = "Student";
     public static final String ROLE_FACULTY = "Faculty";
     public static final String ROLE_ADMIN = "Admin";
-
+    
     public static String formatDate(Date date) {
         if (date == null) {
             return "";

@@ -11,6 +11,7 @@ import Business.Profiles.FacultyDirectory;
 import Business.UserAccounts.UserAccount;
 import UserInterface.AppUtils.AppUtils;
 import UserInterface.WorkAreas.AdminRole.AdministerUserAccountsWorkResp.AdminUserAccount;
+import UserInterface.WorkAreas.AdminRole.ManagePersonnelWorkResp.ManagePersonsJPanel;
 import javax.swing.JOptionPane;
 
 import javax.swing.JPanel;
@@ -80,7 +81,7 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         Back = new javax.swing.JButton();
-        Next = new javax.swing.JButton();
+        btnModify = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
@@ -89,7 +90,8 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
         searchButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         UserAccountTable = new javax.swing.JTable();
-        deleteButton = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnCreate = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(0, 153, 153));
         setLayout(null);
@@ -103,14 +105,14 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
         add(Back);
         Back.setBounds(30, 300, 74, 23);
 
-        Next.setText("Next >>");
-        Next.addActionListener(new java.awt.event.ActionListener() {
+        btnModify.setText("More Details");
+        btnModify.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NextActionPerformed(evt);
+                btnModifyActionPerformed(evt);
             }
         });
-        add(Next);
-        Next.setBounds(500, 300, 80, 23);
+        add(btnModify);
+        btnModify.setBounds(470, 250, 110, 23);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel1.setText("User Accounts");
@@ -185,14 +187,23 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
         add(jScrollPane1);
         jScrollPane1.setBounds(30, 110, 550, 130);
 
-        deleteButton.setText("Delete");
-        deleteButton.addActionListener(new java.awt.event.ActionListener() {
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deleteButtonActionPerformed(evt);
+                btnDeleteActionPerformed(evt);
             }
         });
-        add(deleteButton);
-        deleteButton.setBounds(420, 300, 72, 23);
+        add(btnDelete);
+        btnDelete.setBounds(390, 250, 72, 23);
+
+        btnCreate.setText("Create");
+        btnCreate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateActionPerformed(evt);
+            }
+        });
+        add(btnCreate);
+        btnCreate.setBounds(500, 300, 72, 23);
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
@@ -203,7 +214,7 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_BackActionPerformed
 
-    private void NextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextActionPerformed
+    private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
         // TODO add your handling code here:
         if (selectedFaculty == null) {
             JOptionPane.showMessageDialog(
@@ -242,7 +253,7 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
         ((java.awt.CardLayout) CardSequencePanel.getLayout())
                 .show(CardSequencePanel, "FacultyDetails");
 
-    }//GEN-LAST:event_NextActionPerformed
+    }//GEN-LAST:event_btnModifyActionPerformed
 
     private void UserAccountTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserAccountTableMousePressed
         int selectedrow = UserAccountTable.getSelectedRow();
@@ -260,7 +271,7 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
         refreshTable(searchTextField.getText());
     }//GEN-LAST:event_searchButtonActionPerformed
 
-    private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         if (selectedFaculty == null) {
             JOptionPane.showMessageDialog(this, "Please select a faculty member.");
             return;
@@ -288,14 +299,23 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
         refreshTable("");
         
         AppUtils.deleteSuccess(this);
-    }//GEN-LAST:event_deleteButtonActionPerformed
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
+        // TODO add your handling code here:
+        ManagePersonsJPanel aos = new ManagePersonsJPanel(business, CardSequencePanel);
+
+        CardSequencePanel.add("Manage Persons", aos);
+        ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
+    }//GEN-LAST:event_btnCreateActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
-    private javax.swing.JButton Next;
     private javax.swing.JTable UserAccountTable;
-    private javax.swing.JButton deleteButton;
+    private javax.swing.JButton btnCreate;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnModify;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel2;
