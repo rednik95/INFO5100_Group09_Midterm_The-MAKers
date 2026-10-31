@@ -16,18 +16,25 @@ import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
- * @author kal bugrara
+ * @Desc: Use Case 1: Administrator Use Case - Manage Student Records (Search,
+ * View, Create, Update, Delete).
+ * @author Kinder Izzo Celemin
  */
 public class ManageStudentsJPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form ManageSuppliersJPanel
+     * @Desc: References
      */
     JPanel CardSequencePanel;
     Business business;
     StudentProfile selectedStudent;
 
+    /**
+     * @param bz
+     * @param jp
+     * @Desc: Constructor initializing ManageStudentsJPanel and populating the students
+     * table.
+     */
     public ManageStudentsJPanel(Business bz, JPanel jp) {
         CardSequencePanel = jp;
         this.business = bz;
@@ -36,15 +43,21 @@ public class ManageStudentsJPanel extends javax.swing.JPanel {
 
     }
 
-    public void refreshTable(String search) {
+    /**
+     * @Desc: Populates the student JTable, filtering by Person ID, NUID, First
+     * Name, or Last Name if a search keyword is given.
+     */
+    public void refreshTable(String search) {   // Method to refresh student table rows
 
+        // Retrieve table model
         DefaultTableModel model = (DefaultTableModel) UserAccountTable.getModel();
-        model.setRowCount(0);
+        model.setRowCount(0);   // Clear existing rows
 
-        String keyword = search.trim().toLowerCase();
+        String keyword = search.trim().toLowerCase();   // Normalize search keyword
 
         StudentDirectory sd = business.getStudentDirectory();
 
+         // Loop through all StudentProfiles
         for (StudentProfile sp : sd.getStudentList()) {
 
             String id = sp.getPerson().getPersonId();
@@ -52,13 +65,15 @@ public class ManageStudentsJPanel extends javax.swing.JPanel {
             String firstName = sp.getPerson().getFirstName();
             String lastName = sp.getPerson().getLastName();
 
+            // Filter by Person ID, NUID, First Name, or Last Name
             if (!keyword.isEmpty()
                     && !id.toLowerCase().contains(keyword)
                     && !firstName.toLowerCase().contains(keyword)
                     && !lastName.toLowerCase().contains(keyword)) {
-                continue;
+                continue; // Skip non-matching rows
             }
 
+            // Create 5-column row array
             Object[] row = new Object[5];
             row[0] = sp;
             row[1] = nuid;
@@ -66,7 +81,7 @@ public class ManageStudentsJPanel extends javax.swing.JPanel {
             row[3] = lastName;
             row[4] = sp.getMajor();
 
-            model.addRow(row);
+            model.addRow(row);  // Add row to table model
         }
     }
 
@@ -205,6 +220,9 @@ public class ManageStudentsJPanel extends javax.swing.JPanel {
         btnCreate.setBounds(500, 300, 72, 23);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * @Desc: Removes this panel and returns to the Admin dashboard.
+     */
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
         CardSequencePanel.remove(this);
@@ -213,76 +231,111 @@ public class ManageStudentsJPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_btnBackActionPerformed
 
+    /**
+     * @Desc: Opens AdminStudentProfile panel to view and edit the selected
+     * student's record.
+     */
     private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
+        // Get selected row index
         int selectedRow = UserAccountTable.getSelectedRow();
 
+        // Verify that a student row is selected
         if (selectedRow < 0) {
             JOptionPane.showMessageDialog(this, "Please select a student.");
             return;
         }
 
+        // Retrieve selected StudentProfile from column 0
         StudentProfile selectedStudent
                 = (StudentProfile) UserAccountTable.getValueAt(selectedRow, 0);
 
+        // Instantiate AdminStudentProfile panel
         AdminStudentProfile panel = new AdminStudentProfile(
                 business,
                 CardSequencePanel,
                 selectedStudent
         );
 
+        // Add panel to CardSequencePanel
         CardSequencePanel.add("AdminStudentProfile", panel);
 
+        // Navigate to AdminStudentProfile
         ((java.awt.CardLayout) CardSequencePanel.getLayout())
                 .next(CardSequencePanel);
 
     }//GEN-LAST:event_btnModifyActionPerformed
 
+    /**
+     * @Desc: Captures the selected StudentProfile when a row is clicked.
+     */
     private void UserAccountTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserAccountTableMousePressed
+        // Get clicked row index
         int selectedrow = UserAccountTable.getSelectedRow();
 
+        // Guard against invalid index
         if (selectedrow < 0) {
             return;
         }
 
+        // Store selected StudentProfile
         selectedStudent = (StudentProfile) UserAccountTable.getValueAt(selectedrow, 0);
 
     }//GEN-LAST:event_UserAccountTableMousePressed
 
+    
+    /**
+     * @Desc: Filters the student table using the keyword in searchTextField.
+     */
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        selectedStudent = null;
+        selectedStudent = null; // Clear current selection
+        
+        // Refresh table with search filter
         refreshTable(searchTextField.getText());
     }//GEN-LAST:event_searchButtonActionPerformed
 
+    /**
+     * @Desc: Deletes the selected StudentProfile, any associated UserAccount, and Person record.
+     */
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // Verify a student is selected
         if (selectedStudent == null) {
             JOptionPane.showMessageDialog(this, "Please select a student.");
             return;
         }
 
+        // Confirm deletion with user
         if (!AppUtils.confirmDelete(this)) {
             return;
         }
-
-// Remove associated user accounts, if any
+        
+        // Remove associated user accounts, if any
         business.getUserAccountDirectory()
                 .getUserAccountList()
                 .removeIf(ua -> ua.getAssociatedPersonProfile() == selectedStudent);
 
-// Remove student profile
+        // Remove student profile
         business.getStudentDirectory()
                 .getStudentList()
                 .remove(selectedStudent);
 
+        // Remove Person from PersonDirectory
         business.getPersonDirectory()
                 .getPersonList()
                 .remove(selectedStudent.getPerson());
 
+        // Reset selection
         selectedStudent = null;
+        
+        // Reload student table
         refreshTable("");
         
+        // Show deletion confirmation dialog
         AppUtils.deleteSuccess(this);
     }//GEN-LAST:event_btnDeleteActionPerformed
 
+    /**
+     * @Desc: Opens ManagePersonsJPanel to register a new student.
+     */
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         ManagePersonsJPanel aos = new ManagePersonsJPanel(business, CardSequencePanel);
 
