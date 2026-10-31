@@ -18,18 +18,25 @@ import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
+ * @Desc: Use Case 1: Administrator Use Case - Manage Faculty Records (Search, 
+ * View, Create, Update, Delete).
  * @author Kinder Izzo Celemin
  */
 public class ManageFacultyJPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form ManageSuppliersJPanel
+     * @Desc: References
      */
     JPanel CardSequencePanel;
     Business business;
     FacultyProfile selectedFaculty;
-
+    
+    /**
+     * @param bz
+     * @param jp
+     * @Desc: Constructor initializing ManageFacultyJPanel and populating the 
+     * faculty table.
+     */
     public ManageFacultyJPanel(Business bz, JPanel jp) {
         CardSequencePanel = jp;
         this.business = bz;
@@ -38,21 +45,33 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
 
     }
 
+    /**
+     * @param search
+     * @Desc: Populates the faculty JTable, filtering by Person ID, First Name, or Last
+     * Name if a search keyword is entered.
+     */
     public void refreshTable(String search) {
 
+        // Retrieve table model
         DefaultTableModel model = (DefaultTableModel) UserAccountTable.getModel();
+        // Clear all existing rows
         model.setRowCount(0);
 
+        // Normalize search keyword
         String keyword = search.trim().toLowerCase();
 
+        // Get FacultyDirectory from Business
         FacultyDirectory fd = business.getFacultyDirectory();
 
+        // For Loop through all FacultyProfiles
         for (FacultyProfile fp : fd.getFacultyList()) {
 
+            // Get faculty details
             String id = fp.getPerson().getPersonId();
             String firstName = fp.getPerson().getFirstName();
             String lastName = fp.getPerson().getLastName();
 
+            // Filter by ID, first name, or last name if keyword is non-empty
             if (!keyword.isEmpty()
                     && !id.toLowerCase().contains(keyword)
                     && !firstName.toLowerCase().contains(keyword)
@@ -60,6 +79,7 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
                 continue;
             }
 
+            // Create 5-column row array & Display details
             Object[] row = new Object[5];
             row[0] = fp;
             row[1] = firstName;
@@ -67,6 +87,7 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
             row[3] = fp.getDepartment();
             row[4] = fp.getSubject();
 
+            // Append row to table
             model.addRow(row);
         }
     }
@@ -206,6 +227,9 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
         btnCreate.setBounds(500, 300, 72, 23);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * @Desc: Removes this panel and returns to the Admin dashboard.
+     */
     private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
         // TODO add your handling code here:
         CardSequencePanel.remove(this);
@@ -214,8 +238,12 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_BackActionPerformed
 
+    /**
+     * @Desc: Opens AdminUserAccount panel to view and update the selected Faculty member's profile and account.
+     */
     private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
-        // TODO add your handling code here:
+        
+        // Ensure a faculty member row is selected
         if (selectedFaculty == null) {
             JOptionPane.showMessageDialog(
                     this,
@@ -224,16 +252,19 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
                     JOptionPane.WARNING_MESSAGE);
             return;
         }
-
+        
+        // Variable to hold the faculty member's UserAccount
         UserAccount facultyAccount = null;
 
+        // Find the UserAccount associated with the selected FacultyProfile
         for (UserAccount ua : business.getUserAccountDirectory().getUserAccountList()) {
             if (ua.getAssociatedPersonProfile() == selectedFaculty) {
                 facultyAccount = ua;
                 break;
             }
         }
-
+        
+        // If no UserAccount is linked
         if (facultyAccount == null) {
             JOptionPane.showMessageDialog(
                     this,
@@ -242,65 +273,90 @@ public class ManageFacultyJPanel extends javax.swing.JPanel {
             return;
         }
 
+        // Open AdminUserAccount to view/edit the faculty member's record
         AdminUserAccount panel = new AdminUserAccount(
                 business,
                 CardSequencePanel,
                 facultyAccount
         );
 
+        // Add detail card to CardSequencePanel
         CardSequencePanel.add("FacultyDetails", panel);
 
+        // Show the FacultyDetails card
         ((java.awt.CardLayout) CardSequencePanel.getLayout())
                 .show(CardSequencePanel, "FacultyDetails");
 
     }//GEN-LAST:event_btnModifyActionPerformed
 
+    /**
+     * @Desc: Stores the selected FacultyProfile when a table row is clicked.
+     */
     private void UserAccountTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserAccountTableMousePressed
+        
+        // Get selected row index
         int selectedrow = UserAccountTable.getSelectedRow();
 
+        // Guard against no selection
         if (selectedrow < 0) {
             return;
         }
 
+        // Extract FacultyProfile from col 0
         selectedFaculty = (FacultyProfile) UserAccountTable.getValueAt(selectedrow, 0);
 
     }//GEN-LAST:event_UserAccountTableMousePressed
 
+    /**
+     * @Desc: Filters the faculty table based on the search box text.
+     */
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         selectedFaculty = null;
         refreshTable(searchTextField.getText());
     }//GEN-LAST:event_searchButtonActionPerformed
 
+    /**
+     * @Desc: Deletes the selected FacultyProfile, its associated UserAccount,
+     * and Person record.
+     */
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        
+        // Ensure a faculty member is selected
         if (selectedFaculty == null) {
             JOptionPane.showMessageDialog(this, "Please select a faculty member.");
             return;
         }
 
+        // Ask confirmation before deletion
         if (!AppUtils.confirmDelete(this)) {
             return;
         }
 
-// Remove associated user accounts
+        // Remove associated user accounts
         business.getUserAccountDirectory()
                 .getUserAccountList()
                 .removeIf(ua -> ua.getAssociatedPersonProfile() == selectedFaculty);
 
-// Remove faculty profile
+        // Remove faculty profile
         business.getFacultyDirectory()
                 .getFacultyList()
                 .remove(selectedFaculty);
 
+        // Remove Person from PersonDirectory
         business.getPersonDirectory()
                 .getPersonList()
                 .remove(selectedFaculty.getPerson());
 
-        selectedFaculty = null;
-        refreshTable("");
+        selectedFaculty = null;     // Clear selection
+        refreshTable("");   // Refresh table
         
+        // Show deletion confirmation dialog
         AppUtils.deleteSuccess(this);
     }//GEN-LAST:event_btnDeleteActionPerformed
 
+    /**
+     * @Desc: Opens ManagePersonsJPanel to register a new Faculty member.
+     */
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
         // TODO add your handling code here:
         ManagePersonsJPanel aos = new ManagePersonsJPanel(business, CardSequencePanel);
