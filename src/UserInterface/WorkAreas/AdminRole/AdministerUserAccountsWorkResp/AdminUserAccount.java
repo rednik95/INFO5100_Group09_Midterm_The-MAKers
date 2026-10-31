@@ -22,40 +22,47 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 
 /**
- *
+ * 
+ * @Description: Administrator Use Case - View and Update User Account Details (and Admin Own Profile).
  * @author Kinder Izzo Celemin
+ * 
  */
 public class AdminUserAccount extends javax.swing.JPanel {
 
     /**
      * Creates new form ManageSuppliersJPanel
      */
-    JPanel CardSequencePanel;
+    
+    // The main layout panel for navigating between screens
+    JPanel CardSequencePanel; 
     Business business;
     private UserAccount account;
+    // Flag tracking whether the form is currently in editable mode
     private boolean editing = false;
+    // Flag tracking whether the logged-in Admin is viewing their own profile ("My Profile")
     private boolean myProfile = false;
 
+    /**
+     * @Description: Constructor used when viewing/editing a user account.
+     */
     public AdminUserAccount(Business bz, JPanel jp, UserAccount account) {
         CardSequencePanel = jp;
         this.business = bz;
         this.account = account;
 
         initComponents();
-
+        
+        
         statusCombo.removeAllItems();
         statusCombo.addItem(AppUtils.STATUS_ACTIVE);
-        statusCombo.addItem(AppUtils.STATUS_INACTIVE);
+        statusCombo.addItem(AppUtils.STATUS_INACTIVE); 
 
         roleCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
-            AppUtils.ROLE_ADMIN,
-            AppUtils.ROLE_FACULTY,
-            AppUtils.ROLE_STUDENT
-                
+            AppUtils.ROLE_ADMIN,    // "Admin" role option
         }));
 
-        hireDateSpinner.setModel(new SpinnerDateModel());
-        hireDateSpinner.setEditor(
+        hireDateSpinner.setModel(new SpinnerDateModel());   // Set date model on the hire date spinner
+        hireDateSpinner.setEditor(                          // Configure short date format pattern on the spinner editor
                 new JSpinner.DateEditor(hireDateSpinner, AppUtils.getDatePattern())
         );
 
@@ -65,7 +72,10 @@ public class AdminUserAccount extends javax.swing.JPanel {
         loadAccount();
         setEditMode(false);
     }
-
+    
+    /**
+     * @Description: Constructor used when the Admin clicks "My Profile" to manage their own profile.
+     */
     public AdminUserAccount(Business bz, JPanel jp,
             UserAccount account, boolean myProfile) {
         this(bz, jp, account);
@@ -224,19 +234,27 @@ public class AdminUserAccount extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
-
+        
+        // If user is currently in edit mode, ask for confirmation before discarding changes
         if (editing && AppUtils.cancelChange(this) != JOptionPane.OK_OPTION) {
             return;
         }
-
+        
+        // Remove this panel from CardSequencePanel
         CardSequencePanel.remove(this);
-
-        ((java.awt.CardLayout) CardSequencePanel.getLayout())
-                .previous(CardSequencePanel);
+        
+        // Return to the previous panel
+        ((java.awt.CardLayout) CardSequencePanel.getLayout()).previous(CardSequencePanel);
 
     }//GEN-LAST:event_BackActionPerformed
 
+    /**
+     * @Desc: Handles the Save button: validates inputs, updates
+     * Person/Profile/UserAccount, and returns.
+     */
     private void NextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextActionPerformed
+        
+        // Validate required fields depending on role
         if (firstNameTextField.getText().trim().isEmpty()
                 || lastNameTextField.getText().trim().isEmpty()
                 || emailTextField.getText().trim().isEmpty()
@@ -245,23 +263,25 @@ public class AdminUserAccount extends javax.swing.JPanel {
                 || departmentTextField.getText().trim().isEmpty()
                 || jobTitleTextField.getText().trim().isEmpty()) {
 
-            AppUtils.missingFields(this, "All fields");
+            AppUtils.missingFields(this, "All fields"); // Show missing fields warning dialog
             return;
         }
 
-        char[] password = passwordField.getPassword();
-        char[] confirmation = confirmPasswordField.getPassword();
+        char[] password = passwordField.getPassword();              // Read password characters
+        char[] confirmation = confirmPasswordField.getPassword();   // Read confirm password characters
 
+        // If either password box has text, verify that both match and are non-empty
         if (password.length > 0 || confirmation.length > 0) {
             if (password.length == 0
                     || !java.util.Arrays.equals(password, confirmation)) {
-                AppUtils.passwordMismatch(this);
+                AppUtils.passwordMismatch(this);    // Show password mismatch warning
                 return;
             }
         }
 
-        String username = usernameTextField.getText().trim();
+        String username = usernameTextField.getText().trim();   // Read trimmed username
 
+        // Check if the new username is already taken by a different UserAccount
         if (business.getUserAccountDirectory().usernameExists(username, account)) {
             JOptionPane.showMessageDialog(
                     this,
@@ -273,7 +293,7 @@ public class AdminUserAccount extends javax.swing.JPanel {
         }
 
         Profile profile = account.getAssociatedPersonProfile();
-        Person person = profile.getPerson();
+        Person person = profile.getPerson(); // Retrieve underlying Person object
 
         // Update person
         person.setFirstName(firstNameTextField.getText().trim());
@@ -314,9 +334,10 @@ public class AdminUserAccount extends javax.swing.JPanel {
                 this, "User account updated successfully."
         );
 
-        loadAccount();
-        setEditMode(false);
+        loadAccount();                 // Reload updated values into view
+        setEditMode(false);     // Lock form back into read-only mode
 
+        // Refresh parent tables
         for (java.awt.Component component : CardSequencePanel.getComponents()) {
 
             if (component instanceof ManageUserAccountsJPanel) {
@@ -342,6 +363,9 @@ public class AdminUserAccount extends javax.swing.JPanel {
         setEditMode(true);
     }//GEN-LAST:event_editButtonActionPerformed
 
+    /**
+     * @Desc: Populates the UI fields from the current account.
+     */
     private void loadAccount() {
 
         Profile profile = account.getAssociatedPersonProfile();
@@ -377,6 +401,9 @@ public class AdminUserAccount extends javax.swing.JPanel {
         confirmPasswordField.setText("");
     }
 
+    /**
+     * @Desc: Enables editable mode when the Edit button is clicked.
+     */
     private void setEditMode(boolean editing) {
 
         firstNameTextField.setEditable(editing);
