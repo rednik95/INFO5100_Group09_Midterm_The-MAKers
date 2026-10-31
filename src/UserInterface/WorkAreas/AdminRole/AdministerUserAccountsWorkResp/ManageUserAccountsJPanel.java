@@ -21,19 +21,27 @@ import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
- * @author kal bugrara
+ * @Desc: Use Case 1: Administrator Use Case - Administer User Accounts (Search,
+ * View, Create, Update, Delete).
+ * @author Kinder Izzo Celemin
  */
 public class ManageUserAccountsJPanel extends javax.swing.JPanel {
 
     /**
-     * Creates new form ManageSuppliersJPanel
+     * @Desc: References
      */
     JPanel CardSequencePanel;
     Business business;
     UserAccount selecteduseraccount;
-    private UserAccount adminAccount;
+    UserAccount adminAccount;
 
+    /**
+     * @param bz
+     * @param jp
+     * @param adminAccount
+     * @Desc: Constructor initializing ManageUserAccountsJPanel and populating
+     * the user accounts table.
+     */
     public ManageUserAccountsJPanel(Business bz, JPanel jp, UserAccount adminAccount) {
         CardSequencePanel = jp;
         this.business = bz;
@@ -42,21 +50,32 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
         refreshTable("");
     }
 
+    /**
+     * @Desc: Refreshes the UserAccount JTable, filtering rows by Person ID,
+     * First Name, or Last Name if a keyword is provided.
+     */
     public void refreshTable(String search) {
 
+        // Retrieve table model
         DefaultTableModel model = (DefaultTableModel) UserAccountTable.getModel();
+        // Clear all existing rows
         model.setRowCount(0);
 
+        // Normalize search keyword to lowercase
         String keyword = search.trim().toLowerCase();
 
+        // Get UserAccountDirectory from Business
         UserAccountDirectory uad = business.getUserAccountDirectory();
 
+        // Iterate through all user accounts
         for (UserAccount ua : uad.getUserAccountList()) {
 
+            // Get associated Person details
             String id = ua.getAssociatedPersonProfile().getPerson().getPersonId();
             String firstName = ua.getAssociatedPersonProfile().getPerson().getFirstName();
             String lastName = ua.getAssociatedPersonProfile().getPerson().getLastName();
 
+            // Skip accounts that do not match the search keyword
             if (!keyword.isEmpty()
                     && !id.toLowerCase().contains(keyword)
                     && !firstName.toLowerCase().contains(keyword)
@@ -64,12 +83,14 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
                 continue;
             }
 
+            // Create 4-column row array
             Object[] row = new Object[4];
             row[0] = ua;
             row[1] = ua.getStatus();
             row[2] = ua.getLastActivity();
             row[3] = ua.getLastUpdated();
 
+            // Add row to table model
             model.addRow(row);
         }
     }
@@ -209,6 +230,9 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
         btnCreate.setBounds(500, 300, 72, 23);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * @Desc: Removes this panel and returns to the Admin dashboard.
+     */
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
         CardSequencePanel.remove(this);
@@ -217,7 +241,13 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_btnBackActionPerformed
 
+    /**
+     * @Desc: Opens AdminUserAccount panel to view or edit the selected user
+     * account.
+     */
     private void btnMoreDetailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoreDetailsActionPerformed
+        
+        // Verify that a user account is selected
         if (selecteduseraccount == null) {
             JOptionPane.showMessageDialog(
                     this,
@@ -228,27 +258,39 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
             return;
         }
 
+        // Instantiate a fresh AdminUserAccount panel for the selected account
         AdminUserAccount panel = new AdminUserAccount(
                 business,
                 CardSequencePanel,
                 selecteduseraccount
         );
-
+        
+        // Add panel to CardSequencePanel   
         CardSequencePanel.add(panel);
 
+        // Navigate to AdminUserAccount panel
         ((java.awt.CardLayout) CardSequencePanel.getLayout())
                 .next(CardSequencePanel);
     }//GEN-LAST:event_btnMoreDetailsActionPerformed
 
+    /**
+     * @Desc: Captures the selected UserAccount when a row in the table is
+     * clicked.
+     */
     private void UserAccountTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserAccountTableMousePressed
-        // Extracts the row (uaser account) in the table that is selected by the user
+
+        // Get total number of rows
         int size = UserAccountTable.getRowCount();
         int selectedrow = UserAccountTable.getSelectionModel().getLeadSelectionIndex();
 
+        // Guard against out-of-bounds index
         if (selectedrow < 0 || selectedrow > size - 1) {
             return;
         }
+        
+        // Retrieve UserAccount from column 0
         selecteduseraccount = (UserAccount) UserAccountTable.getValueAt(selectedrow, 0);
+        
         if (selecteduseraccount == null) {
             return;
         }
@@ -260,16 +302,25 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
         refreshTable(searchTextField.getText());
     }//GEN-LAST:event_searchButtonActionPerformed
 
+    /**
+     * @Desc: Deletes the selected UserAccount, its associated Profile, and
+     * Person record (preventing self-deletion).
+     */
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        
+        // Get selected row index
         int row = UserAccountTable.getSelectedRow();
 
+        // If no row is selected
         if (row < 0) {
             JOptionPane.showMessageDialog(this, "Please select an account.");
             return;
         }
-
+        
+        // Retrieve selected UserAccount
         UserAccount account = (UserAccount) UserAccountTable.getValueAt(row, 0);
 
+        // Prevent the currently logged-in Admin from deleting their own account
         if (account == adminAccount) {
             JOptionPane.showMessageDialog(
                     this,
@@ -280,15 +331,18 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
             return;
         }
 
+        // Ask for user confirmation before deleting
         if (!AppUtils.confirmDelete(this)) {
+            
+            // Cancel deletion if user clicks No
             return;
         }
 
-        // Remove person
+        // GET profile and person details
         Profile profile = account.getAssociatedPersonProfile();
         Person person = profile.getPerson();
 
-// Remove profile
+        // Remove the role-specific profile from its respective directory
         if (profile instanceof StudentProfile) {
             business.getStudentDirectory().getStudentList().remove(profile);
         } else if (profile instanceof FacultyProfile) {
@@ -297,22 +351,28 @@ public class ManageUserAccountsJPanel extends javax.swing.JPanel {
             business.getEmployeeDirectory().getEmployeeList().remove(profile);
         }
 
-// Remove user account
+        // Remove the UserAccount from UserAccountDirectory
         business.getUserAccountDirectory()
                 .getUserAccountList().remove(account);
 
-// Remove person
+        // Remove the Person from PersonDirectory
         business.getPersonDirectory()
                 .getPersonList().remove(person);
 
+        // Reset selection & Reload Table
         selecteduseraccount = null;
         refreshTable("");
 
+        // Display deletion success message
         AppUtils.deleteSuccess(this);
     }//GEN-LAST:event_btnDeleteActionPerformed
 
+    /**
+     * @Desc: Opens a fresh ManagePersonsJPanel to register a new person and
+     * create their account.
+     */
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        // TODO add your handling code here:
+
         ManagePersonsJPanel aos = new ManagePersonsJPanel(business, CardSequencePanel);
 
         CardSequencePanel.add("Manage Persons", aos);
