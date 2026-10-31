@@ -1,119 +1,229 @@
-# Digital University System
+<div align="center">
 
-## Project Overview
-This project implements a digital twin of a university ecosystem, utilizing role-based access control to manage the interactions between Administrators, Faculty, and Students. The objective is to demonstrate a secure, compartmentalized architecture using Java Swing.
+# 🎓 Digital University System
+### INFO 5100 — Application Engineering & Development (Midterm Project)
+**Team 09: The MAKers**
 
-**Key Features Implemented:**
-*   Role-based authentication and authorization.
-*   Centralized University Model managing course catalogs and schedules.
-*   Administrator account and personnel management.
-*   Faculty course offering and profile management.
-*   Student registration, transcripts, and graduation auditing.
-*   Interactive, CardLayout-based Java Swing UI.
+[![Java](https://img.shields.io/badge/Java-JDK%2019%2B-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/)
+[![IDE](https://img.shields.io/badge/IDE-Apache%20NetBeans%2016%2B-1B6AC6?style=for-the-badge&logo=apachenetbeanside&logoColor=white)](https://netbeans.apache.org/)
+[![UI](https://img.shields.io/badge/UI-Java%20Swing%20CardLayout-009999?style=for-the-badge)](https://docs.oracle.com/javase/tutorial/uiswing/)
+[![Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge)]()
+
+*A role-based Digital University platform integrating the Reference University Architecture with an Access Control Layer for University Administrators, Faculty Members, and Students.*
+
+[Project Overview](#-project-overview) •
+[Team Information](#-team-information) •
+[Installation & Setup](#-installation--setup-instructions) •
+[Access Control](#-authentication--access-control) •
+[Features](#-features-implemented) •
+[Usage & Testing](#-usage-instructions)
+
+</div>
 
 ---
 
-## Team Information
-| Name | Role / Use Case | NUID |
-| :--- | :--- | :--- |
-| **Kinder Izzo Celemin** | Administrator Use Case | 003947783 |
-| **Astrid Noizillier** | Faculty Use Case | [Insert NUID] |
-| **Mayu Rocha Yamada** | Student Use Case | [Insert NUID] |
+## 📖 Project Overview
+
+The **Digital University System** is a multi-role Java Swing desktop application built for the INFO 5100 Midterm Project at Northeastern University. The objective of this project is to integrate a reference implementation of the **Digital University Model** (`University.*`) with a robust **Access Control Layer** (`Business.*` and `UserInterface.*`) that enforces authentication, role-based authorization, and complete CRUD workflows across three core university personas:
+
+1. **University Administrator (Use Case 1)**
+2. **Faculty Member (Use Case 2)**
+3. **Student (Use Case 3)**
+
+### ✨ Key Features Implemented
+* **Role-Based Access Control (RBAC):** Centralized authentication routing users strictly to their authorized work areas (`AdminRoleWorkAreaJPanel`, `FacultyWorkAreaJPanel`, `StudentWorkAreaJPanel`).
+* **Pre-Registration & Student Activation Flow:** Administrators pre-register students with an **NUID** and **Activation Code**; students subsequently claim and activate their accounts via `StudentSignUpJPanel`.
+* **Comprehensive Admin CRUD & Audit Timestamps:** Full creation, searching, modification, and deletion of User Accounts, Faculty, Students, and HR Personnel with automatic `Last Activity` and `Last Updated` timestamp tracking.
+* **Dynamic Faculty Course & Performance Management:** Faculty members manage course details, inspect enrolled student profiles (hobbies, interests, progress), and generate class performance/grade reports.
+* **End-to-End Student Academic Portal:** Students register/drop course offerings, submit coursework and track completion percentages, run degree graduation audits, and review semester transcripts with live cumulative GPA calculations.
+* **Clean `CardLayout` Navigation & Input Validation:** All workflows operate smoothly inside `CardSequencePanel` with centralized validation and confirmation dialogs powered by `AppUtils`.
 
 ---
 
-## Installation & Setup Instructions
+## 👥 Team Information
+
+**Group 09 — The MAKers**
+
+| Team Member | Assigned Use Case & Role | NUID | GitHub Branch | Primary Package / Scope |
+| :--- | :--- | :--- | :--- | :--- |
+| **Kinder Izzo Celemin** | **Use Case 1:** Administrator Use Case *(University Admin)* | `003947783` | `feature-admin` | `UserInterface.WorkAreas.AdminRole.*`<br>`UserInterface.AppUtils.StudentAcademicModel` |
+| **Astrid Noizillier** | **Use Case 2:** Faculty Use Case *(Faculty Member)* | *(Insert Astrid's NUID)* | `feature-faculty` | `UserInterface.WorkAreas.FacultyRole.*`<br>`UserInterface.AppUtils.AppUtils` |
+| **Mayu Rocha Yamada** | **Use Case 3:** Student Use Case *(Student)* | *(Insert Mayu's NUID)* | `feature-student` | `UserInterface.WorkAreas.StudentRole.*`<br>`Business.Profiles.StudentProfile` |
+
+> 💡 *Note: Remember to replace the placeholder NUIDs above with Astrid's and Mayu's NUIDs before final submission.*
+
+---
+
+## ⚙️ Installation & Setup Instructions
 
 ### Prerequisites
-*   **Java:** JDK [Insert Version, e.g., 19] or higher.
-*   **IDE:** Apache NetBeans 16 (recommended for Swing UI compilation).
-*   **Version Control:** Git.
+* **Java Development Kit (JDK):** Version **19** or higher (compatible with JDK 17+).
+* **IDE:** **Apache NetBeans 16** or newer (required for Ant build scripts and `.form` GUI designer files).
+* **Version Control:** **Git** (Git Bash, Terminal, or Lazygit).
+* **Included Libraries:** `AbsoluteLayout`, `darcula-1.0.0.jar`, `objectdb.jar`, and `velocity-engine-core-2.3.jar` (all pre-bundled inside the `/lib` folder).
 
-### Setup Steps
-1.  **Clone the Repository:**
-    ```bash
-    git clone https://github.com/rednik95/INFO5100_Group09_Midterm_The-MAKers.git
-    cd INFO5100_Group09_Midterm_The-MAKers
-    ```
-2.  **Open in IDE:** Open the project folder in Apache NetBeans.
-4.  **Run the Application:** Navigate to `src/Business/ProfileWorkAreaMainFrame.java`, right-click the file, and select **Run File**.
-
----
-
-## Authentication & Access Control
-
-### The Authentication Process
-The application features a secure login screen where users input their assigned credentials. The system cross-references the credentials with the `UserAccountDirectory`. Upon successful authentication, the user is routed to their specific `WorkArea` based on their assigned role, and the system records the `lastAccessTime`.
-
-### Authorization Rules
-*   **Administrators:** Granted access to `AdminRoleWorkAreaJPanel`. Authorized to create, modify, and delete all user accounts and personnel profiles (Faculty/Student/Staff) across the system.
-*   **Faculty:** Granted access to `FacultyWorkAreaJPanel`. Authorized to view and update specific course offerings, generate student performance reports, and manage their own pilot profiles.
-*   **Students:** Granted access to `StudentWorkAreaJPanel`. Authorized to register for classes (via empty seat assignments), review their academic transcripts, and perform graduation audits.
+### Step-by-Step Setup
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/rednik95/INFO5100_Group09_Midterm_The-MAKers.git
+   cd INFO5100_Group09_Midterm_The-MAKers
+   ```
+2. **Open the Project in Apache NetBeans:**
+   * Launch **Apache NetBeans**.
+   * Navigate to **File > Open Project...** and select the cloned `INFO5100_Group09_Midterm_The-MAKers` directory.
+3. **Clean and Build the Project:**
+   * Right-click the project node in the **Projects** pane and select **Clean and Build** (or press `Shift + F11`).
+   * Verify that the output console reports `BUILD SUCCESSFUL` with zero compilation errors.
+4. **Run the Application:**
+   * Expand `Source Packages > Business`.
+   * Right-click **`ProfileWorkAreaMainFrame.java`** and select **Run File** (`Shift + F6`), or click the green **Run Project** (`F6`) button in the toolbar.
 
 ---
 
-## Features Implemented & Contribution Breakdown
+## 🔐 Authentication & Access Control
 
-### Administrator Use Case 1 (Implemented by Kinder Izzo Celemin)
-*   **Administer User Accounts:** Full CRUD capabilities for user logins via `ManageUserAccountsJPanel` and `AdminUserAccount`.
-*   **Register Persons (HR):** Ability to add new identities to the system via `ManagePersonsJPanel` and `AdministerPersonJPanel`.
-*   **Manage Student/Faculty Records:** Capability to update, delete, or view academic and staff data.
-*   **Manage Own Profile:** Admin profile updates via `AdminMyProfileJPanel`.
+### 1. The Authentication Process
+* **Login Verification:** Users enter their username and password on the left-hand login sidebar of `ProfileWorkAreaMainFrame`. The system queries `UserAccountDirectory.AuthenticateUser(username, password)`.
+* **Account Status Enforcement:** Only accounts with an `"Active"` status are permitted to log in. Accounts marked `"Inactive"` are blocked from accessing work areas.
+* **Activity Tracking:** Upon successful authentication, the system updates the account's `lastActivity` timestamp (`new Date()`) and loads the appropriate role work area into `CardSequencePanel`.
+* **Student NUID Activation (`StudentSignUpJPanel`):** Students pre-registered by an Admin in HR (`ManagePersonsJPanel`) initially do not have an active login. They click **Sign Up** on the main frame, enter their assigned **NUID** and **Activation Code**, and set their personal password to activate their `UserAccount`.
 
-### Faculty Use Case 2 (Implemented by Astrid Noizillier)
-*   **Manage Courses:** View and update specific class details within the `CourseSchedule`.
-*   **Manage Own Profile:** Update personal faculty details.
-*   **Performance Reports:** Generate reports based on student grades within assigned classes.
-*   **View Student Profiles:** Review academic progress and interests of enrolled students.
-
-### Student Use Case 3 (Implemented by Mayu Rocha Yamada)
-*   **Manage Coursework:** Track progress and submit assignments.
-*   **Class Registration:** Enroll in or drop courses by claiming a `SeatAssignment` in a `CourseOffer`.
-*   **Graduation Audit:** Track core and elective credits against `Degree` requirements.
-*   **Review Transcript:** View academic history compiled from previous `CourseLoad`s.
+### 2. Role-Based Authorization Rules
+| Role | Authorized Work Area | Access Permissions & Restrictions |
+| :--- | :--- | :--- |
+| **Admin** | `AdminRoleWorkAreaJPanel` | Full access to User Account CRUD, HR Person Registration, Student Record Management, Faculty Record Management, and Admin Self-Profile. Prevented from deleting or deactivating their own logged-in Admin account. |
+| **Faculty** | `FacultyWorkAreaJPanel` | Authorized to manage assigned courses, view enrolled student profiles, generate class grade reports, and edit their own faculty profile. Restricted from Admin HR/Account panels and Student registration panels. |
+| **Student** | `StudentWorkAreaJPanel` | Authorized to enroll/drop courses, submit coursework, run graduation audits, view transcripts, and edit their own student profile. Restricted from Admin and Faculty management panels. |
 
 ---
 
-## Usage Instructions
+## 🛠️ Features Implemented
 
-1.  **Launch the App:** Run `ProfileWorkAreaMainFrame.java`.
-2.  **Login:**
-    *   *Admin Example:* Username: `admin` | Password: `[Insert Password]`
-    *   *Faculty Example:* Username: `faculty` | Password: `[Insert Password]`
-3.  **Navigate:** Use the left-hand control panel buttons to access your role's specific features. The right-hand work area will update using CardLayout.
-4.  **Data Entry:** When creating a new entity (like a Person or User Account), ensure all fields are filled out, as the system strictly validates against empty or NULL values.
-5.  **Logout:** Click the Logout button to return to the main authentication screen.
+### 1. Use Case 1: Administrator Use Case *(Implemented by Kinder Izzo Celemin)*
+* **Administer User Accounts (`ManageUserAccountsJPanel.java`, `AdminUserAccount.java`):**
+  * View all system accounts in a searchable table displaying `User Name`, `Status`, `Last Activity`, and `Last Updated`.
+  * Search accounts dynamically by Person ID, First Name, or Last Name.
+  * View and edit account credentials, status (`Active`/`Inactive`), role-specific attributes (`Job Title`, `Subject`, `Major`, `Department`, `Hire Date`), and reset passwords.
+  * Automatic form clearing (`clearFields()`) whenever an account is created, edited, or exited so stale data never persists across screens.
+  * Self-deletion safeguard preventing the logged-in administrator from deleting their own account.
+* **Register Persons — HR (`ManagePersonsJPanel.java`):**
+  * Dynamic role-based registration form supporting **Admin (Academic Staff)**, **Faculty**, and **Student** creation.
+  * Automatically adapts form labels and visibility based on selected role (e.g., switching `Username` to `NUID`, `Job Title` to `Major` or `Subject`, and `Password` to `Activation Code` for Students).
+* **Manage Student Records (`ManageStudentsJPanel.java`, `AdminStudentProfile.java`):**
+  * Search, view, create, update, and cascadingly delete student records (`StudentProfile`, `Person`, and linked `UserAccount`).
+* **Manage Faculty Records (`ManageFacultyJPanel.java`, `AdminUserAccount.java`):**
+  * Search, view, create, update, and delete faculty profiles (`Department`, `Subject`, `Hire Date`, contact details).
+* **Manage Own Profile (`AdminUserAccount.java` with `myProfile = true`):**
+  * Allows the logged-in University Admin to view and update their personal contact info, department, job title, username, and password while locking the status dropdown so they cannot accidentally deactivate themselves.
+
+### 2. Use Case 2: Faculty Use Case *(Implemented by Astrid Noizillier)*
+* **Manage Courses (`FacultyWorkAreaJPanel.java`):**
+  * View and update course details, syllabi, and scheduling information within the department's `CourseSchedule`.
+* **Manage Own Profile (`FacultyMyProfileJPanel.java`):**
+  * View and update personal faculty profile attributes (name, email, phone, department, subject).
+* **Generate Performance Reports:**
+  * Compile and review student grade distributions and academic performance across assigned classes.
+* **Manage Student Profiles:**
+  * Inspect enrolled student profiles, including academic progress, hobbies, and interests.
+* **Shared UI Validation Utilities (`AppUtils.java`):**
+  * Standardized confirmation dialogs (`confirmChange`, `cancelChange`, `confirmDelete`), validation alerts (`missingFields`, `passwordMismatch`), and locale-aware date formatting (`formatDate`, `getDatePattern`).
+
+### 3. Use Case 3: Student Use Case *(Implemented by Mayu Rocha Yamada)*
+* **Manage Coursework (`StudentAcademicModel.java` & Student Coursework UI):**
+  * Track active course enrollments, update assignment submission text, and record completion progress percentages (`0%`–`100%`).
+* **Register for Classes:**
+  * Browse open course offerings (`OfferingEntry`) by semester, enroll in available seats, and drop in-progress courses with real-time seat count updates.
+* **Perform Graduation Audit:**
+  * Track completed credits, in-progress credits, and core vs. elective requirements against the **32-credit** MS Information Systems degree requirement.
+* **Review Transcript (`ReviewTranscriptJPanel.java`):**
+  * View official course history by semester, letter grades, credit hours, academic standing, and live weighted **Cumulative GPA** calculation on a 4.0 scale.
+* **Manage Own Profile & Sign-Up (`StudentMyProfileJPanel.java`, `StudentSignUpJPanel.java`):**
+  * Activate pre-registered student accounts using NUID + Activation Code and update personal contact details, hobbies, and interests.
 
 ---
 
-## Testing Guide
+## 🖥️ Usage Instructions
 
-### System Verification
-1.  **Run Main:** Launch the application. The `ConfigureABusiness.java` file will automatically bootstrap the University Model with sample departments, courses, and a pre-registered faculty member.
-2.  **Authentication Test:** Attempt to log in with an invalid username or password. A dialog box should appear denying access.
-3.  **Authorization Test:** Log in as a Student. Verify that you cannot access the Administrator HR panels or the Faculty course management tools.
-4.  **Validation Test:** Attempt to save a new User Account with a blank username or password. Verify that the system throws an error dialog and prevents the save.
+### Default Login Credentials
+When the application starts, `ConfigureABusiness.initialize()` pre-populates sample accounts for immediate testing:
+
+| Role | Username | Password | Notes |
+| :--- | :--- | :--- | :--- |
+| **University Admin** | `admin` | `****` | Full access to all 5 Administrator responsibilities |
+| **Faculty Member** | `faculty` | `****` | Access to Faculty course, student, and profile tools |
+| **Student (Active)** | `adam` | `****` | Pre-activated student account for immediate login |
+
+### Step-by-Step Walkthrough Scenarios
+
+#### Scenario A: Administrator Pre-Registers a Student & Student Activates Account
+1. Log in as **Admin** (`admin` / `****`).
+2. Click **Register Persons (HR)** (`ManagePersonsJPanel`).
+3. Select **Role: `Student`** from the dropdown. Notice the form dynamically switches to **NUID**, **Major**, and **Activation Code**.
+4. Enter First Name, Last Name, NUID (e.g., `003999888`), Major (`Information Systems`), and Activation Code (e.g., `1234`), then click **Save**.
+5. Click **Sign Up** on the left sidebar (`StudentSignUpJPanel`), enter NUID `003999888` and Activation Code `1234`, set a new password, and log in as the newly activated student!
+
+#### Scenario B: Administrator Manages User Accounts & Faculty Records
+1. Log in as **Admin** (`admin` / `****`).
+2. Click **Administer User Accounts** (`ManageUserAccountsJPanel`).
+3. Use the **Search** bar to filter by name or Person ID, select an account, and click **More Details**.
+4. Click **Edit** in `AdminUserAccount`, update the user's department, phone number, or password, and click **Save**.
+5. Click **My Profile** on the Admin dashboard to update the Administrator's own profile details.
+
+#### Scenario C: Student Enrolls in Classes & Reviews Transcript
+1. Log in as a **Student** (`adam` / `****` or your newly activated student account).
+2. Open **Register for Classes** to enroll in an open `Fall 2026` or `Spring 2027` course offering.
+3. Open **Manage Coursework** to submit an assignment and update course progress to `100%`.
+4. Open **Review Transcript** and **Graduation Audit** to verify completed credits and cumulative GPA.
 
 ---
 
-## Challenges & Solutions
+## 🧪 Testing Guide
 
-*   **Challenge #1:** Organizing the folder structure to prevent messy import statements across different packages.
-*   **Solution #1:** We ran a mass refactoring script to clean the package structure, consolidating the backend into a clean `University.*` package format not the `info5100.university.example.<class>.<package>.` Right-click the project and select **Clean and Build**. Ensure all `import University.*;` statements resolve correctly.
+| Test Case ID | Feature Under Test | Test Steps | Expected Result |
+| :--- | :--- | :--- | :--- |
+| **TC-01** | **Authentication & Invalid Login** | Enter an invalid username/password and click `Login`. | Error dialog appears; user is denied access to `CardSequencePanel`. |
+| **TC-02** | **Role Authorization Isolation** | Log in as `adam` (Student) or `faculty` (Faculty). | User is routed strictly to `StudentWorkAreaJPanel` or `FacultyWorkAreaJPanel`; Admin panels are inaccessible. |
+| **TC-03** | **Required Field Validation** | In `ManagePersonsJPanel` or `AdminUserAccount`, leave required fields blank and click `Save`. | `AppUtils.missingFields()` warning dialog pops up and prevents saving incomplete data. |
+| **TC-04** | **Password Mismatch Validation** | Enter different values in `Password` and `Confirm Password` and click `Save`. | `AppUtils.passwordMismatch()` warning dialog pops up and blocks the save. |
+| **TC-05** | **Duplicate Username Prevention** | Attempt to create or rename an account to an existing username (`admin`). | Warning dialog `"This username already exists."` prevents duplicate creation. |
+| **TC-06** | **Admin Self-Deletion Protection** | Log in as `admin`, select `admin` in `ManageUserAccountsJPanel`, and click `Delete`. | Warning dialog `"You cannot delete your own account."` blocks self-deletion. |
+| **TC-07** | **Clean Form State on Re-entry** | Create or edit an account in `AdminUserAccount` or `ManagePersonsJPanel`, save/exit, and re-open the panel. | `clearFields()` resets all text boxes so no stale text remains from previous sessions. |
 
 ---
 
-## Future Enhancements
-*   **Database Integration:** Transition from volatile memory (ArrayLists) to a persistent database.
-*   **Advanced Analytics:** Implement charting libraries to visualize university revenue and student performance trends over time.
-*   **Enhanced Employer Portal:** Build out the `EmployerProfile` UI to allow companies to directly recruit students based on their transcripts and high-impact courses.
+## 🧩 Challenges & Solutions
+
+1. **Challenge: Bridging the University Model (`University.*`) with the Access Control Layer (`Business.*`)**
+   * **Problem:** The starter code came from two separate packages (`Info5100-University-Example` and `ProfileWorkareaExample`) with different `Person` and `StudentProfile` classes.
+   * **Solution:** We standardized the package structure under `University.*` and built `StudentAcademicModel.java` in `UserInterface.AppUtils` to seamlessly connect `Business.Profiles.StudentProfile` (by NUID) to `University.Department`, `CourseCatalog`, `CourseSchedule`, and `CourseOffer`.
+2. **Challenge: Stale Form Data Persisting in `CardLayout` Panels**
+   * **Problem:** Navigating back and forth between `ManageUserAccountsJPanel`, `AdminUserAccount`, and `ManagePersonsJPanel` occasionally left previous input values in the text boxes.
+   * **Solution:** We implemented dedicated `clearFields()` methods, attached a `ComponentAdapter` (`componentShown`), and removed completed form cards from `CardSequencePanel` upon returning so every form loads in a clean state.
+3. **Challenge: Role-Specific Registration Requirements**
+   * **Problem:** Registering a Student requires an NUID, Major, and Activation Code, whereas registering Faculty or Admin staff requires a Username, Password, Department, Job Title/Subject, and Hire Date.
+   * **Solution:** We implemented a dynamic listener (`roleComboActionPerformed`) in `ManagePersonsJPanel.java` that automatically re-labels fields and toggles visibility of `Hire Date` and `Department` based on the selected role, paired with role-aware validation.
 
 ---
 
-## Contribution Breakdown:
-| Name |Contribution |
-| :--- | :--- |
-| **Astrid Noizillier** | Adv Programmer|
-| **Kinder Izzo Celemin** | Coordinator | 
-| **Mayu Rocha Yamada** | Programmer |
+## 🚀 Future Enhancements
 
+* **Persistent Database Storage:** Migrate in-memory `ArrayList` directories (`PersonDirectory`, `UserAccountDirectory`, `StudentDirectory`, `FacultyDirectory`) to a relational database (PostgreSQL/MySQL) or ObjectDB persistence.
+* **Password Hashing & Security:** Integrate BCrypt password hashing instead of plaintext password comparisons in `UserAccount`.
+* **Visual Analytics Dashboard:** Add JavaFX/JFreeChart visualizations for university-wide tuition revenue, course enrollment capacity, and GPA distributions.
+* **Automated Email Notifications:** Send automated welcome emails containing activation codes when an Administrator pre-registers a new student in HR.
+
+---
+
+## 📊 Contribution Breakdown
+
+| Team Member | Coding & Architecture Contributions | Documentation, Testing & Presentation |
+| :--- | :--- | :--- |
+| **Kinder Izzo Celemin** | • Implemented **Use Case 1 (Administrator)** (`ManageUserAccountsJPanel`, `AdminUserAccount`, `ManagePersonsJPanel`, `ManageFacultyJPanel`, `ManageStudentsJPanel`, `AdminStudentProfile`).<br>• Built `StudentAcademicModel` bridging the `University.*` package.<br>• Configured repository structure, package refactoring (`University.*`), and form state reset logic. | • Authored `README.md` documentation and architecture diagrams.<br>• Performed end-to-end validation and CRUD testing for Admin workflows.<br>• Co-prepared presentation slides and live demo recording. |
+| **Astrid Noizillier** | • Implemented **Use Case 2 (Faculty)** (`FacultyWorkAreaJPanel`, `FacultyMyProfileJPanel`, course management, and student performance reporting).<br>• Created `AppUtils.java` providing centralized validation alerts, confirmation dialogs, and date formatting helpers. | • Conducted unit and UI testing on Faculty workflows and `AppUtils` validations.<br>• Contributed to presentation slides and Faculty live demo segment. |
+| **Mayu Rocha Yamada** | • Implemented **Use Case 3 (Student)** (`StudentWorkAreaJPanel`, `ReviewTranscriptJPanel`, `StudentMyProfileJPanel`, `StudentSignUpJPanel`, coursework tracking, registration, and graduation audit).<br>• Integrated NUID activation code sign-up workflow. | • Tested Student sign-up, enrollment, GPA calculations, and transcript rendering.<br>• Contributed to presentation slides and Student live demo segment. |
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ by <b>Team 09 (The MAKers)</b> — Northeastern University INFO 5100 (Fall 2026)</sub>
+</div>
