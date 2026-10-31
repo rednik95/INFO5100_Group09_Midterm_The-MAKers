@@ -12,7 +12,8 @@ import java.util.Locale;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * @Desc: Utility class providing status/role constants, date formatting, and 
+ * validation/confirmation dialogs.
  * @author Astrid Noizillier
  */
 final public class AppUtils {
@@ -29,10 +30,17 @@ final public class AppUtils {
     public static final String ROLE_FACULTY = "Faculty";
     public static final String ROLE_ADMIN = "Admin";
     
+    /**
+     * @Desc: Formats a Date object into a localized short-date + medium-time string.
+     */
     public static String formatDate(Date date) {
-        if (date == null) {
+        
+        // If date is null
+        if (date == null) { 
             return "";
         }
+        
+        // Format date and time using default locale
         return DateFormat.getDateTimeInstance(
                 DateFormat.SHORT,
                 DateFormat.MEDIUM,
@@ -40,7 +48,10 @@ final public class AppUtils {
         ).format(date);
     }
 
-    //Produce a Short Date format
+    /**
+     * @Desc: Produces a short date format pattern string for JSpinner date
+     * editors.
+     */
     public static String getDatePattern() {
         DateFormat df = DateFormat.getDateInstance(
                 DateFormat.SHORT,
@@ -50,9 +61,14 @@ final public class AppUtils {
         return ((SimpleDateFormat) df).toPattern();
     }
 
-    //Wng Message for save confirmation
+    /**
+     * @Desc: Displays a confirmation dialog asking if the user wants to save
+     * changes.
+     */
     public static int confirmChange(Component window) {
-        int choice = JOptionPane.showConfirmDialog(
+        
+        // Show OK/Cancel confirmation dialog
+        int choice = JOptionPane.showConfirmDialog( 
                 window,
                 "Do you want to save changes?",
                 "Confirmation",
@@ -61,9 +77,12 @@ final public class AppUtils {
         return choice;
     }
     
-    //Wng Message to confirm if no save is ok
+    /**
+     * @Desc: Displays a confirmation dialog asking if the user wants to leave
+     * without saving changes.
+     */
     public static int cancelChange(Component window) {
-        int choice = JOptionPane.showConfirmDialog(
+        int choice = JOptionPane.showConfirmDialog( // Show OK/Cancel confirmation dialog
                 window,
                 "Leave without saving changes?",
                 "Unsaved Changes",
@@ -72,9 +91,12 @@ final public class AppUtils {
         return choice;
     }
     
-    //Wng Message in regards to missing field
+    /**
+     * @Desc: Displays a warning message dialog indicating which required field
+     * is missing.
+     */
     public static void missingFields(Component window, String fieldName) {
-        JOptionPane.showMessageDialog(
+        JOptionPane.showMessageDialog(  // Show warning dialog
                 window,
                 "Please fill in the required field: " + fieldName,
                 "Missing Information",
@@ -82,9 +104,12 @@ final public class AppUtils {
         );
     }
     
-    //Validation that Save was successful
+    /**
+     * @Desc: Displays an information message confirming that an entity was
+     * saved successfully.
+     */
     public static void saveSuccess(Component window, String entity, String id) {
-        JOptionPane.showMessageDialog(
+        JOptionPane.showMessageDialog(  // Show information dialog with entity name and ID
                 window,
                 entity + " saved successfully. ID: " + id,
                 "Success",
@@ -92,7 +117,10 @@ final public class AppUtils {
         );
     }
     
-    //Wng Message if passsword do not match
+    /**
+     * @Desc: Displays a warning message when the password and confirmation
+     * password do not match.
+     */
     public static void passwordMismatch(Component window) {
         JOptionPane.showMessageDialog(
                 window,
@@ -102,9 +130,12 @@ final public class AppUtils {
         );
     }
     
-    //Wng Message to confirm delettion of selected items
+    /**
+     * @Desc: Displays a Yes/No warning dialog to confirm deletion of a selected
+     * item.
+     */
     public static boolean confirmDelete(java.awt.Component parent) {
-        return javax.swing.JOptionPane.showConfirmDialog(
+        return javax.swing.JOptionPane.showConfirmDialog(   // Return true only if user clicks YES
                 parent,
                 "Are you sure you want to delete the selected item?",
                 "Confirm Deletion",
@@ -113,9 +144,12 @@ final public class AppUtils {
         ) == javax.swing.JOptionPane.YES_OPTION;
     }
 
-    //Validation that DELETE was successful
+    /**
+     * @Desc: Displays an information dialog confirming that deletion was
+     * successful.
+     */
     public static void deleteSuccess(Component parent) {
-        JOptionPane.showMessageDialog(
+        JOptionPane.showMessageDialog(  // Show information dialog
                 parent,
                 "Deleted successfully.",
                 "Deletion successful",
