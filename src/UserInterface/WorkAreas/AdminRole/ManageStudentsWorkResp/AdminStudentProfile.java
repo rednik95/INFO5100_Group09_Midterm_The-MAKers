@@ -302,6 +302,9 @@ public class AdminStudentProfile extends javax.swing.JPanel {
         // Student role is fixed        
     }//GEN-LAST:event_roleComboActionPerformed
 
+    /**
+     * @Desc: Unlocks form fields for editing when Edit is clicked.
+     */
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         setEditMode(true);
     }//GEN-LAST:event_btnEditActionPerformed
