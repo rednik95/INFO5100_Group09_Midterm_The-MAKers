@@ -48,7 +48,7 @@ The **Digital University System** is a multi-role Java Swing desktop application
 | :--- | :--- | :--- | :--- | :--- |
 | **Kinder Izzo Celemin** | **Use Case 1:** Administrator Use Case *(University Admin)* | `003947783` | `feature-admin` | `UserInterface.WorkAreas.AdminRole.*`<br>`UserInterface.AppUtils.StudentAcademicModel` |
 | **Astrid Noizillier** | **Use Case 2:** Faculty Use Case *(Faculty Member)* | *(Insert Astrid's NUID)* | `feature-faculty` | `UserInterface.WorkAreas.FacultyRole.*`<br>`UserInterface.AppUtils.AppUtils` |
-| **Mayu Rocha Yamada** | **Use Case 3:** Student Use Case *(Student)* | *(Insert Mayu's NUID)* | `feature-student` | `UserInterface.WorkAreas.StudentRole.*`<br>`Business.Profiles.StudentProfile` |
+| **Mayu Rocha Yamada** | **Use Case 3:** Student Use Case *(Student)* | `003997556` | `feature-student` | `UserInterface.WorkAreas.StudentRole.*`<br>`Business.Profiles.StudentProfile` |
 
 > 💡 *Note: Remember to replace the placeholder NUIDs above with Astrid's and Mayu's NUIDs before final submission.*
 
