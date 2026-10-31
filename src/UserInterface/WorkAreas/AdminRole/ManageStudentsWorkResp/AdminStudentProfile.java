@@ -5,26 +5,24 @@
  */
 package UserInterface.WorkAreas.AdminRole.ManageStudentsWorkResp;
 
-import UserInterface.WorkAreas.AdminRole.AdministerUserAccountsWorkResp.*;
 import Business.Business;
 import Business.Person.Person;
-import Business.Profiles.Profile;
 import Business.Profiles.StudentProfile;
 import Business.UserAccounts.UserAccount;
 import UserInterface.AppUtils.AppUtils;
 import java.util.Date;
 import javax.swing.JOptionPane;
-
 import javax.swing.JPanel;
 
 /**
- *
- * @author kal bugrara
+ * @Desc: Use Case 1: Administrator Use Case - View and Update Student Profile 
+ * Data.
+ * @author Kinder Izzo Celemin
  */
 public class AdminStudentProfile extends javax.swing.JPanel {
-
+    
     /**
-     * Creates new form ManageSuppliersJPanel
+     * @Desc: References
      */
     JPanel CardSequencePanel;
     Business business;
@@ -32,6 +30,10 @@ public class AdminStudentProfile extends javax.swing.JPanel {
     private boolean editing = false;
     private StudentProfile student;
 
+    /**
+     * @Desc: Constructor initializing AdminStudentProfile and loading the
+     * selected student's data.
+     */
     public AdminStudentProfile(Business bz, JPanel jp, StudentProfile student) {
         CardSequencePanel = jp;
         this.business = bz;
@@ -48,15 +50,19 @@ public class AdminStudentProfile extends javax.swing.JPanel {
 
         initComponents();
 
-        statusCombo.removeAllItems();
-        statusCombo.addItem(AppUtils.STATUS_ACTIVE);
-        statusCombo.addItem(AppUtils.STATUS_INACTIVE);
+        statusCombo.removeAllItems();   // Clear placeholder items in status dropdown
+        statusCombo.addItem(AppUtils.STATUS_ACTIVE);    // Add "Active" option
+        statusCombo.addItem(AppUtils.STATUS_INACTIVE);  // Add "Inactive" option
 
+        // Set fixed Student role option
         roleCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
             AppUtils.ROLE_STUDENT
         }));
 
-        loadAccount();
+        // Populate boxes with student's data
+        loadAccount();  
+        
+        // Start in read-only mode
         setEditMode(false);
     }
 
@@ -69,8 +75,8 @@ public class AdminStudentProfile extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        Back = new javax.swing.JButton();
-        Next = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         roleLabel = new javax.swing.JLabel();
@@ -97,28 +103,28 @@ public class AdminStudentProfile extends javax.swing.JPanel {
         departmentTextField = new javax.swing.JTextField();
         statusLabel = new javax.swing.JLabel();
         statusCombo = new javax.swing.JComboBox<>();
-        editButton = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(0, 153, 153));
         setLayout(null);
 
-        Back.setText("<< Back");
-        Back.addActionListener(new java.awt.event.ActionListener() {
+        btnBack.setText("<< Back");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BackActionPerformed(evt);
+                btnBackActionPerformed(evt);
             }
         });
-        add(Back);
-        Back.setBounds(20, 370, 74, 23);
+        add(btnBack);
+        btnBack.setBounds(20, 370, 74, 23);
 
-        Next.setText("Save");
-        Next.addActionListener(new java.awt.event.ActionListener() {
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NextActionPerformed(evt);
+                btnSaveActionPerformed(evt);
             }
         });
-        add(Next);
-        Next.setBounds(500, 370, 80, 23);
+        add(btnSave);
+        btnSave.setBounds(500, 370, 80, 23);
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jLabel2.setText("Student Profile");
@@ -194,31 +200,37 @@ public class AdminStudentProfile extends javax.swing.JPanel {
         add(jPanel1);
         jPanel1.setBounds(20, 60, 490, 310);
 
-        editButton.setText("Edit");
-        editButton.addActionListener(new java.awt.event.ActionListener() {
+        btnEdit.setText("Edit");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                editButtonActionPerformed(evt);
+                btnEditActionPerformed(evt);
             }
         });
-        add(editButton);
-        editButton.setBounds(420, 370, 72, 23);
+        add(btnEdit);
+        btnEdit.setBounds(420, 370, 72, 23);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
+    /**
+     * @Desc: Handles Back button: prompts if editing, clears fields, removes
+     * card, and steps back.
+     */
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
 
-        if (AppUtils.cancelChange(this) == JOptionPane.OK_OPTION) {
+        if (AppUtils.cancelChange(this) == JOptionPane.OK_OPTION) { // Confirm if unsaved edits exist
 
             CardSequencePanel.remove(this);
-
-            ((java.awt.CardLayout) CardSequencePanel.getLayout())
-                    .previous(CardSequencePanel);
+            ((java.awt.CardLayout) CardSequencePanel.getLayout()).previous(CardSequencePanel);
         }
 
-    }//GEN-LAST:event_BackActionPerformed
+    }//GEN-LAST:event_btnBackActionPerformed
 
-    private void NextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextActionPerformed
+    /**
+     * @Desc: Validates student profile fields, updates Person, StudentProfile,
+     * and UserAccount, and refreshes table.
+     */
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
 
-        // Validate required fields
+        // Validate required fields (First Name, Last Name, Email, Major)
         if (firstNameTextField.getText().trim().isEmpty()
                 || lastNameTextField.getText().trim().isEmpty()
                 || emailTextField.getText().trim().isEmpty()
@@ -228,20 +240,22 @@ public class AdminStudentProfile extends javax.swing.JPanel {
             return;
         }
 
-        char[] password = passwordField.getPassword();
-        char[] confirmation = confirmPasswordField.getPassword();
+        
+        char[] password = passwordField.getPassword();              // Read password characters
+        char[] confirmation = confirmPasswordField.getPassword();   // Read confirm password characters
 
         // Password can only be changed if an account exists
         if (account != null && (password.length > 0 || confirmation.length > 0)) {
             if (password.length == 0
                     || !java.util.Arrays.equals(password, confirmation)) {
+                // Alert password mismatch
                 AppUtils.passwordMismatch(this);
                 return;
             }
         }
 
-        // Update person
-        Person person = student.getPerson();
+        // Update Person attributes
+        Person person = student.getPerson();    // Get associated Person object
 
         person.setFirstName(firstNameTextField.getText().trim());
         person.setLastName(lastNameTextField.getText().trim());
@@ -251,16 +265,18 @@ public class AdminStudentProfile extends javax.swing.JPanel {
         // Update student profile
         student.setMajor(departmentTextField.getText().trim());
 
-        // Update account only if activated
+        // Update UserAccount only if already activated
         if (account != null) {
             account.setStatus(
                     AppUtils.STATUS_ACTIVE.equals(statusCombo.getSelectedItem())
             );
 
-            if (password.length > 0) {
-                account.setPassword(new String(password));
+            // If a new password was typed
+            if (password.length > 0) {  
+                account.setPassword(new String(password));  // Update password
             }
 
+            // Update timestamp
             account.setLastUpdate(new Date());
         }
 
@@ -269,8 +285,8 @@ public class AdminStudentProfile extends javax.swing.JPanel {
                 "Student profile updated successfully."
         );
 
-        loadAccount();
-        setEditMode(false);
+        loadAccount();              // Reload updated student profile fields
+        setEditMode(false);  // Return to read-only mode
 
         // Refresh student directory
         for (java.awt.Component component : CardSequencePanel.getComponents()) {
@@ -280,19 +296,26 @@ public class AdminStudentProfile extends javax.swing.JPanel {
         }
 
 
-    }//GEN-LAST:event_NextActionPerformed
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     private void roleComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_roleComboActionPerformed
         // Student role is fixed        
     }//GEN-LAST:event_roleComboActionPerformed
 
-    private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+    /**
+     * @Desc: Unlocks form fields for editing when Edit is clicked.
+     */
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         setEditMode(true);
-    }//GEN-LAST:event_editButtonActionPerformed
+    }//GEN-LAST:event_btnEditActionPerformed
 
+    /**
+     * @Desc: Populates the form with the selected student's Person,
+     * StudentProfile, and UserAccount details.
+     */
     private void loadAccount() {
 
-        Person person = student.getPerson();
+        Person person = student.getPerson(); // Get Person object
 
         roleCombo.setSelectedItem(AppUtils.ROLE_STUDENT);
 
@@ -305,10 +328,10 @@ public class AdminStudentProfile extends javax.swing.JPanel {
         jobTitleTextField.setText(student.getNuid());
         departmentTextField.setText(student.getMajor());
 
-        if (account != null) {
+        if (account != null) {  // If student has an activated UserAccount
             usernameTextField.setText(account.getUserLoginName());
             statusCombo.setSelectedItem(account.getStatus());
-        } else {
+        } else {    // If student has not activated their account yet
             usernameTextField.setText(student.getNuid());
             statusCombo.setSelectedItem(AppUtils.STATUS_INACTIVE);
         }
@@ -317,6 +340,9 @@ public class AdminStudentProfile extends javax.swing.JPanel {
         confirmPasswordField.setText("");
     }
 
+    /**
+     * @Desc: Toggles editability of all form controls.
+     */
     private void setEditMode(boolean editing) {
 
         firstNameTextField.setEditable(editing);
@@ -329,24 +355,24 @@ public class AdminStudentProfile extends javax.swing.JPanel {
         statusCombo.setEnabled(editing && account != null);
 
         departmentTextField.setEditable(editing);
-        jobTitleTextField.setEditable(false);
+        jobTitleTextField.setEditable(false);       // Keep NUID read-only
 
-        roleCombo.setEnabled(false);
-        employeeIdTextField.setEditable(false);
+        roleCombo.setEnabled(false);    // Keep Role fixed
+        employeeIdTextField.setEditable(false); // Keep Person ID read-only
 
-        this.editing = editing;
+        this.editing = editing; // Store editing flag
 
-        editButton.setVisible(!editing);
-        Next.setVisible(editing);
+        btnEdit.setVisible(!editing);           // Show Edit button in view mode
+        btnSave.setVisible(editing);        // Show Save button in edit mode
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Back;
-    private javax.swing.JButton Next;
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnSave;
     private javax.swing.JPasswordField confirmPasswordField;
     private javax.swing.JLabel confirmPasswordLabel;
     private javax.swing.JTextField departmentTextField;
-    private javax.swing.JButton editButton;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JTextField emailTextField;
     private javax.swing.JLabel employeeIdLabel;

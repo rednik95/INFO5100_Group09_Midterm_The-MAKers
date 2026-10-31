@@ -7,10 +7,8 @@ package UserInterface.WorkAreas.AdminRole.ManagePersonnelWorkResp;
 
 import Business.Business;
 import Business.Person.Person;
-import Business.Profiles.EmployeeProfile;
 import Business.Profiles.Profile;
 import Business.Profiles.StudentProfile;
-import Business.UserAccounts.UserAccount;
 import UserInterface.AppUtils.AppUtils;
 import java.util.Date;
 import javax.swing.JOptionPane;
@@ -20,17 +18,20 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 
 /**
- *
+ * @Desc: Use Case 1: Administrator Use Case - Register Persons (Students,
+ * Faculty, Academic Staff) and Create Accounts.
+ * 
  * @author Kinder Izzo Celemin
  */
 public class ManagePersonsJPanel extends javax.swing.JPanel {
 
-    /**
-     * Creates new form ManageSuppliersJPanel
-     */
     JPanel CardSequencePanel;
     Business business;
-
+    
+    /**
+     * @Desc: Constructor initializing the HR Person Registration form and clearing all
+     * input boxes.
+     */
     public ManagePersonsJPanel(Business bz, JPanel jp) {
         CardSequencePanel = jp;
         this.business = bz;
@@ -47,16 +48,21 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
             AppUtils.ROLE_STUDENT
         }));
 
+        // Initialize date model on spinner
         hireDateSpinner.setModel(new SpinnerDateModel());
 
+        // Format spinner with short date pattern
         hireDateSpinner.setEditor(
                 new JSpinner.DateEditor(
                         hireDateSpinner,
                         AppUtils.getDatePattern()
                 )
         );
+        
         passwordField.setText("");
         confirmPasswordField.setText("");
+     
+        clearFields();// Ensure all input boxes start completely empty
     }
 
     /**
@@ -69,7 +75,7 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         Back = new javax.swing.JButton();
-        Next = new javax.swing.JButton();
+        BtnSave = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         roleLabel = new javax.swing.JLabel();
@@ -111,14 +117,14 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
         add(Back);
         Back.setBounds(20, 370, 74, 23);
 
-        Next.setText("Save");
-        Next.addActionListener(new java.awt.event.ActionListener() {
+        BtnSave.setText("Save");
+        BtnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NextActionPerformed(evt);
+                BtnSaveActionPerformed(evt);
             }
         });
-        add(Next);
-        Next.setBounds(500, 370, 80, 23);
+        add(BtnSave);
+        BtnSave.setBounds(500, 370, 80, 23);
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jLabel2.setText("Manage Personnel (HR)");
@@ -199,9 +205,16 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
         jPanel1.setBounds(20, 60, 490, 310);
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * @Desc: Confirms leaving without saving, clears all boxes, removes this
+     * card, and steps back.
+     */
     private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
         // TODO add your handling code here:
         if (AppUtils.cancelChange(this) == JOptionPane.OK_OPTION) {
+            // Clear all filled boxes
+            clearFields();
+            
             CardSequencePanel.remove(this);
             ((java.awt.CardLayout) CardSequencePanel.getLayout()).next(CardSequencePanel);
             //       ((java.awt.CardLayout)CardSequencePanel.getLayout()).show(CardSequencePanel, "IdentifyEventTypes");
@@ -209,22 +222,27 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_BackActionPerformed
 
-    private void NextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextActionPerformed
-
+    /**
+     * @Desc: Validates inputs, creates the Person, Profile, and UserAccount,
+     * clears all filled boxes, and returns.
+     */
+    private void BtnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSaveActionPerformed
+        
+        //Get 
         String role = roleCombo.getSelectedItem().toString();
         String firstName = firstNameTextField.getText().trim();
         String lastName = lastNameTextField.getText().trim();
         String email = emailTextField.getText().trim();
-        String phone = phoneNumberTextField.getText().trim();
-        String username = usernameTextField.getText().trim(); // This acts as NUID for students
-        String jobTitle = jobTitleTextField.getText().trim();
+        String phone = phoneNumberTextField.getText().trim();   
+        String username = usernameTextField.getText().trim();   // Acts as username or NUID for students
+        String jobTitle = jobTitleTextField.getText().trim();   // Acts as Job Title, Subject, or Major
         String department = departmentTextField.getText().trim();
 
         // 1. ROLE-BASED VALIDATION (Fixes the "fill all fields" error for Students)
         if (AppUtils.ROLE_STUDENT.equals(role)) {
             // Students only require Name and NUID (Username field)
             if (firstName.isEmpty() || lastName.isEmpty() || username.isEmpty()) {
-                AppUtils.missingFields(this, "First Name, Last Name, and NUID");
+                AppUtils.missingFields(this, "First Name, Last Name, and NUID"); // Alert missing student fields
                 return;
             }
         } else {
@@ -232,24 +250,27 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
             if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()
                     || phone.isEmpty() || username.isEmpty()
                     || jobTitle.isEmpty() || department.isEmpty()) {
-                AppUtils.missingFields(this, "All fields");
+                AppUtils.missingFields(this, "All fields"); // Alert missing fields
                 return;
             }
         }
 
+        // 2. Validate that Password / Activation Code is not empty
         if (passwordField.getPassword().length == 0) {
-            AppUtils.missingFields(this, "Password");
+            AppUtils.missingFields(this, "Password");  // Alert missing password
             return;
         }
 
+        // 3. Validate that Password and Confirm Password match
         if (!java.util.Arrays.equals(
                 passwordField.getPassword(),
                 confirmPasswordField.getPassword())) {
             
-            AppUtils.passwordMismatch(this);
+            AppUtils.passwordMismatch(this);    // Alert password mismatch
             return;
         }
 
+        // 4. Check for duplicate username in UserAccountDirectory
         if (business.getUserAccountDirectory().usernameExists(username, null)) {
             javax.swing.JOptionPane.showMessageDialog(
                     this,
@@ -260,7 +281,7 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
             return;
         }
 
-        // Create person
+        // 5. Create Person in PersonDirectory
         Person person = business.getPersonDirectory().newPerson(
                 firstName,
                 lastName,
@@ -268,7 +289,7 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
                 phone
         );
 
-        // Create profile according to selected role
+        // 6. Create Profile and UserAccount according to selected Role
         Profile profile;
 
         // Create Profile ADMIN
@@ -279,7 +300,8 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
                     jobTitle,
                     (Date) hireDateSpinner.getValue()
             );
-            // Create user account
+            
+            // Create active/inactive UserAccount for Admin
             business.getUserAccountDirectory().newUserAccount(
                     profile,
                     username,
@@ -291,14 +313,15 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
         } 
         // Create Profile STUDENT
         else if (AppUtils.ROLE_STUDENT.equals(role)) {
-            // 1. Create it specifically as a StudentProfile first (Note: we use 'jobTitle' here because that's the text field acting as Major)
+
+            // Create StudentProfile with NUID (username) and Major (jobTitle)
             StudentProfile studentProfile = business.getStudentDirectory().newStudentProfile(
                     person, 
                     username, 
                     jobTitle
             );
 
-            // 2. Set the activation code
+            // Store the activation code so the student can activate their account via Sign Up
             studentProfile.setActivationCode(new String(passwordField.getPassword()));
 
         }
@@ -311,7 +334,8 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
                     jobTitle,
                     (Date) hireDateSpinner.getValue()
             );
-            // Create user account
+            
+            // Create active/inactive UserAccount for Faculty
             business.getUserAccountDirectory().newUserAccount(
                     profile,
                     username,
@@ -322,16 +346,16 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
             );
         }
 
+        // Show creation confirmation dialog
         javax.swing.JOptionPane.showMessageDialog(
                 this,
                 "User created successfully."
         );
-
-        // Return to Admin menu
-        ((java.awt.CardLayout) CardSequencePanel.getLayout())
-                .previous(CardSequencePanel);
-
-    }//GEN-LAST:event_NextActionPerformed
+        
+        // 7. Clear all filled boxes so nothing stays filled when returning to this page
+        clearFields();
+        
+    }//GEN-LAST:event_BtnSaveActionPerformed
 
     private void roleComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_roleComboActionPerformed
         
@@ -382,7 +406,7 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
-    private javax.swing.JButton Next;
+    private javax.swing.JButton BtnSave;
     private javax.swing.JPasswordField confirmPasswordField;
     private javax.swing.JLabel confirmPasswordLabel;
     private javax.swing.JTextField departmentTextField;
@@ -412,5 +436,26 @@ public class ManagePersonsJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel usernameLabel;
     private javax.swing.JTextField usernameTextField;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * @Desc: Clears all text fields, password fields, and resets dropdowns and
+     * date spinner.
+     */
+    private void clearFields() {// Helper method to clear all form boxes
+        employeeIdTextField.setText(""); // Clear Person ID box
+        firstNameTextField.setText(""); // Clear First Name box
+        lastNameTextField.setText(""); // Clear Last Name box
+        emailTextField.setText(""); // Clear Email box
+        phoneNumberTextField.setText(""); // Clear Phone Number box
+        usernameTextField.setText(""); // Clear Username / NUID box
+        passwordField.setText(""); // Clear Password / Activation Code box
+        confirmPasswordField.setText(""); // Clear Confirm Password box
+        jobTitleTextField.setText(""); // Clear Job Title / Subject / Major box
+        departmentTextField.setText(""); // Clear Department box
+        hireDateSpinner.setValue(new Date()); // Reset Hire Date spinner to today
+        if (statusCombo.getItemCount() > 0) { // Check if statusCombo has items
+            statusCombo.setSelectedIndex(0); // Reset status to "Active"
+        }    
+    }
 
 }

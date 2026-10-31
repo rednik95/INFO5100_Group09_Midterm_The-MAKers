@@ -24,6 +24,7 @@ import javax.swing.SpinnerDateModel;
 /**
  * 
  * @Description: Administrator Use Case - View and Update User Account Details (and Admin Own Profile).
+ * For both Admin/Faculty
  * @author Kinder Izzo Celemin
  * 
  */
@@ -37,6 +38,7 @@ public class AdminUserAccount extends javax.swing.JPanel {
     JPanel CardSequencePanel; 
     Business business;
     private UserAccount account;
+    
     // Flag tracking whether the form is currently in editable mode
     private boolean editing = false;
     // Flag tracking whether the logged-in Admin is viewing their own profile ("My Profile")
@@ -59,13 +61,17 @@ public class AdminUserAccount extends javax.swing.JPanel {
 
         roleCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{
             AppUtils.ROLE_ADMIN,    // "Admin" role option
+            AppUtils.ROLE_FACULTY, // "Faculty" role option
+            AppUtils.ROLE_STUDENT // "Student" role option
         }));
 
         hireDateSpinner.setModel(new SpinnerDateModel());   // Set date model on the hire date spinner
         hireDateSpinner.setEditor(                          // Configure short date format pattern on the spinner editor
                 new JSpinner.DateEditor(hireDateSpinner, AppUtils.getDatePattern())
         );
+        
 
+        
         passwordField.setText("");
         confirmPasswordField.setText("");
 
@@ -382,14 +388,15 @@ public class AdminUserAccount extends javax.swing.JPanel {
         usernameTextField.setText(account.getUserLoginName());
         statusCombo.setSelectedItem(account.getStatus());
 
-        if (profile instanceof EmployeeProfile) {
-            EmployeeProfile employee = (EmployeeProfile) profile;
+        // Update role-specific Profile attributes
+        if (profile instanceof EmployeeProfile) {                           // If Employee/Admin profile
+            EmployeeProfile employee = (EmployeeProfile) profile;       
 
             departmentTextField.setText(employee.getDepartment());
             jobTitleTextField.setText(employee.getJobTitle());
             hireDateSpinner.setValue(employee.getHireDate());
 
-        } else if (profile instanceof FacultyProfile) {
+        } else if (profile instanceof FacultyProfile) {                     // If Faculty profile
             FacultyProfile faculty = (FacultyProfile) profile;
 
             departmentTextField.setText(faculty.getDepartment());
