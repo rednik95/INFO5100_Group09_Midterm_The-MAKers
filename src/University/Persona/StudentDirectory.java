@@ -39,7 +39,10 @@ public class StudentDirectory {
                 return sp;
             }
         }
-            return null; //not found after going through the whole list
-         }
-    
+        return null; //not found after going through the whole list
+    }
+
+    public java.util.ArrayList<StudentProfile> getStudentList() {
+        return studentlist;
+    }
 }

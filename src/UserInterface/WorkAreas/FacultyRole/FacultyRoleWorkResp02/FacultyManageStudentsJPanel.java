@@ -14,6 +14,7 @@ import UserInterface.WorkAreas.AdminRole.AdministerUserAccountsWorkResp.AdminUse
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
+import Business.Profiles.StudentProfile;
 
 /**
  *
@@ -139,7 +140,7 @@ public class FacultyManageStudentsJPanel extends javax.swing.JPanel {
                 {null, null, null, null}
             },
             new String [] {
-                "Course ID", "Student Name", "Course", "Semester"
+                "Student ID", "Student Name", "Course", "Semester"
             }
         ));
         jScrollPane1.setViewportView(studentsTable);
@@ -193,44 +194,89 @@ public class FacultyManageStudentsJPanel extends javax.swing.JPanel {
 
         DefaultTableModel model
                 = (DefaultTableModel) studentsTable.getModel();
+
         model.setRowCount(0);
 
-        String annaId = facultyProfile.getPerson().getPersonId();
+        String facultyId = facultyProfile.getPerson().getPersonId();
 
-        University.Persona.Faculty.FacultyProfile anna
-                = business.getPrimaryDepartment()
-                        .getFacultyDirectory()
-                        .findTeachingFaculty(annaId);
+        University.Department.Department dept
+                = business.getPrimaryDepartment();
 
-        if (anna == null) {
+        University.Persona.Faculty.FacultyProfile faculty
+                = dept.getFacultyDirectory().findTeachingFaculty(facultyId);
+
+        if (faculty == null) {
             return;
         }
 
-        java.util.HashSet<String> displayed = new java.util.HashSet<>();
+        String filter = search.toLowerCase().trim();
 
-        for (FacultyAssignment assignment : anna.getFacultyAssignments()) {
+        for (University.Persona.StudentProfile student
+                : dept.getStudentDirectory().getStudentList()) {
 
-            CourseOffer offer = assignment.getCourseOffer();
-            Course course = offer.getSubjectCourse();
+            String studentId = student.getTranscript() == null
+                    ? "" : "";
 
-            String id = course.getCOurseNumber();
-            String name = course.getName();
+            // Match University student to Business student
+            for (StudentProfile businessStudent
+                    : business.getStudentDirectory().getStudentList()) {
 
-            if (!id.toLowerCase().contains(search.toLowerCase())
-                    && !name.toLowerCase().contains(search.toLowerCase())) {
-                continue;
+                String id = businessStudent.getPerson().getPersonId();
+
+                if (!student.isMatch(id)) {
+                    continue;
+                }
+
+                String name = businessStudent.getPerson().getFirstName()
+                        + " " + businessStudent.getPerson().getLastName();
+
+                for (University.CourseSchedule.SeatAssignment seatAssignment
+                        : student.getCourseList()) {
+
+                    CourseOffer offer = seatAssignment.getCourseOffer();
+
+                    boolean taughtByFaculty = false;
+
+                    for (FacultyAssignment assignment
+                            : faculty.getFacultyAssignments()) {
+
+                        if (assignment.getCourseOffer() == offer) {
+                            taughtByFaculty = true;
+                            break;
+                        }
+                    }
+
+                    if (!taughtByFaculty) {
+                        continue;
+                    }
+
+                    String courseId = offer.getCourseNumber();
+                    String semester = "";
+
+                    for (CourseSchedule schedule
+                            : dept.getCourseSchedules().values()) {
+
+                        if (schedule.getCourseOffers().contains(offer)) {
+                            semester = schedule.getSemester();
+                            break;
+                        }
+                    }
+
+                    if (!id.toLowerCase().contains(filter)
+                            && !name.toLowerCase().contains(filter)
+                            && !courseId.toLowerCase().contains(filter)
+                            && !semester.toLowerCase().contains(filter)) {
+                        continue;
+                    }
+
+                    model.addRow(new Object[]{
+                        id,
+                        name,
+                        courseId,
+                        semester
+                    });
+                }
             }
-
-            if (!displayed.add(id)) {
-                continue;
-            }
-
-            model.addRow(new Object[]{
-                id,
-                name,
-                course.getCredits(),
-                course.getCoursePrice()
-            });
         }
     }
 
