@@ -166,28 +166,38 @@ public class FacultyPerformanceReportJPanel extends javax.swing.JPanel {
         int selectedRow = performanceTable.getSelectedRow();
 
         if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(this, "Please select a course.");
+            JOptionPane.showMessageDialog(this, "Please select a student.");
             return;
         }
 
-        String courseId = performanceTable.getValueAt(selectedRow, 0).toString();
+// Get the correct row even if the table is sorted
+        int modelRow = performanceTable.convertRowIndexToModel(selectedRow);
 
-        Course selectedCourse = business.getPrimaryDepartment()
-                .getCourseCatalog()
-                .getCourseByNumber(courseId);
+// Column 0 contains the Student ID
+        String studentId = performanceTable.getModel()
+                .getValueAt(modelRow, 0).toString();
 
-        FacultyCourseDetailsJPanel panel
-                = new FacultyCourseDetailsJPanel(
+// Find the selected student
+        StudentProfile selectedStudent
+                = business.getStudentDirectory().findStudent(studentId);
+
+        if (selectedStudent == null) {
+            JOptionPane.showMessageDialog(this, "Student not found.");
+            return;
+        }
+
+// Open the student details panel
+        FacultyStudentDetailsJPanel panel
+                = new FacultyStudentDetailsJPanel(
                         business,
                         CardSequencePanel,
-                        selectedCourse,
-                        facultyProfile
+                        selectedStudent
                 );
 
-        CardSequencePanel.add("FacultyCourseDetails", panel);
+        CardSequencePanel.add("FacultyStudentDetails", panel);
 
         ((java.awt.CardLayout) CardSequencePanel.getLayout())
-                .show(CardSequencePanel, "FacultyCourseDetails");
+                .show(CardSequencePanel, "FacultyStudentDetails");
 
     }//GEN-LAST:event_btnModifyActionPerformed
 
