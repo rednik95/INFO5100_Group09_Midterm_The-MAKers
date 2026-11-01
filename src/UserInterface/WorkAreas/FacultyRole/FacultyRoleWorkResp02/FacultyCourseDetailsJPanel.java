@@ -514,7 +514,7 @@ public class FacultyCourseDetailsJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_BackActionPerformed
 
     private void refreshSemesterTable() {
-
+//
         DefaultTableModel model
                 = (DefaultTableModel) jTable1.getModel();
 
