@@ -195,6 +195,16 @@ public class FacultyManageCoursesJPanel extends javax.swing.JPanel {
                 .getCourseCatalog()
                 .getCourseByNumber(courseId);
 
+        if (selectedCourse == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Selected course could not be found.",
+                    "Course Not Found",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
         FacultyCourseDetailsJPanel panel
                 = new FacultyCourseDetailsJPanel(
                         business,
