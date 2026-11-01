@@ -16,6 +16,7 @@ import Business.UserAccounts.UserAccount;
 import UserInterface.WorkAreas.AdminRole.AdministerUserAccountsWorkResp.AdminUserAccount;
 import UserInterface.WorkAreas.AdminRole.ManagePersonnelWorkResp.ManagePersonsJPanel;
 import UserInterface.WorkAreas.FacultyRole.FacultyRoleWorkResp02.FacultyManageCoursesJPanel;
+import UserInterface.WorkAreas.FacultyRole.FacultyRoleWorkResp02.FacultyManageStudentsJPanel;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -165,8 +166,18 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton4IdentifyResourceAssetsActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
+        
+        FacultyManageStudentsJPanel panel =
+            new FacultyManageStudentsJPanel(
+                    business,
+                    CardSequencePanel,
+                    facultyProfile
+            );
 
+    CardSequencePanel.add("FacultyManageStudentsJPanel", panel);
+
+    ((CardLayout) CardSequencePanel.getLayout())
+            .show(CardSequencePanel, "FacultyManageStudentsJPanel");
 
     }//GEN-LAST:event_jButton10ActionPerformed
 

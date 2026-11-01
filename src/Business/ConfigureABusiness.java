@@ -115,7 +115,22 @@ class ConfigureABusiness {
 
         // Assign INFO5100 to Anna
         annaUniversityProfile.AssignAsTeacher(offer1);
-        
+
+        // Create Adam in the University model
+        String adamId = person003.getPersonId();
+
+        University.Persona.Person adamPerson
+                = dept.getPersonDirectory().newPerson(adamId);
+
+        University.Persona.StudentProfile adamUniversityProfile
+                = dept.getStudentDirectory().newStudentProfile(adamPerson);
+
+        // Create Adam's course load for Fall 2026
+        adamUniversityProfile.newCourseLoad("Fall2026");
+
+        // Enroll Adam in Anna's INFO5100 course
+        dept.RegisterForAClass(adamId, "INFO5100", "Fall2026");
+
         return business;
 
     }
