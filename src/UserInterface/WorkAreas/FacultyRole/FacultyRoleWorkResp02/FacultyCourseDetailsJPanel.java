@@ -518,6 +518,10 @@ public class FacultyCourseDetailsJPanel extends javax.swing.JPanel {
         DefaultTableModel model
                 = (DefaultTableModel) jTable1.getModel();
 
+        model.setColumnIdentifiers(new Object[]{
+            "Semester", "Capacity", "Enrolled", "Available"
+        });
+
         model.setRowCount(0);
 
         for (CourseSchedule schedule
@@ -527,9 +531,15 @@ public class FacultyCourseDetailsJPanel extends javax.swing.JPanel {
 
                 if (offer.getSubjectCourse() == selectedCourse) {
 
+                    int capacity = offer.getSeatList().size();
+                    int enrolled = countOccupiedSeats(offer);
+                    int available = capacity - enrolled;
+
                     Object[] row = {
                         schedule.getSemester(),
-                        ((java.util.ArrayList<?>) offer.getSeatList()).size()
+                        capacity,
+                        enrolled,
+                        available
                     };
 
                     model.addRow(row);
@@ -561,6 +571,17 @@ public class FacultyCourseDetailsJPanel extends javax.swing.JPanel {
         }
     }
 
+    private int countOccupiedSeats(CourseOffer offer) {
+        int occupied = 0;
+
+        for (University.CourseSchedule.Seat seat : offer.getSeatList()) {
+            if (seat.isOccupied()) {
+                occupied++;
+            }
+        }
+
+        return occupied;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
     private javax.swing.JButton Next;
