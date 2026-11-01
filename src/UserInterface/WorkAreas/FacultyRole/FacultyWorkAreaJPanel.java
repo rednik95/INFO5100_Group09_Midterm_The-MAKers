@@ -11,9 +11,12 @@
 package UserInterface.WorkAreas.FacultyRole;
 
 import Business.Business;
+import Business.Profiles.FacultyProfile;
 import Business.UserAccounts.UserAccount;
 import UserInterface.WorkAreas.AdminRole.AdministerUserAccountsWorkResp.AdminUserAccount;
 import UserInterface.WorkAreas.AdminRole.ManagePersonnelWorkResp.ManagePersonsJPanel;
+import UserInterface.WorkAreas.FacultyRole.FacultyRoleWorkResp02.FacultyManageCoursesJPanel;
+import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -26,6 +29,7 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
     javax.swing.JPanel CardSequencePanel;
     Business business;
     private UserAccount facultyAccount;
+    FacultyProfile facultyProfile;
 
     /**
      * Creates new form UnitRiskWorkArea
@@ -34,6 +38,7 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
         business = b;
         CardSequencePanel = clp;
         facultyAccount = account;
+        facultyProfile = (FacultyProfile) account.getAssociatedPersonProfile();
         initComponents();
     }
 
@@ -150,13 +155,13 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton4IdentifyResourceAssetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4IdentifyResourceAssetsActionPerformed
-        JOptionPane.showMessageDialog(
-                this,
-                "This feature is not available yet.",
-                "Manage Courses",
-                JOptionPane.INFORMATION_MESSAGE
-        );
 
+        FacultyManageCoursesJPanel panel = new FacultyManageCoursesJPanel(business, CardSequencePanel, facultyProfile);
+
+        CardSequencePanel.add("FacultyManageCoursesJPanel", panel);
+
+        ((java.awt.CardLayout) CardSequencePanel.getLayout())
+                .show(CardSequencePanel, "FacultyManageCoursesJPanel");
     }//GEN-LAST:event_jButton4IdentifyResourceAssetsActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
