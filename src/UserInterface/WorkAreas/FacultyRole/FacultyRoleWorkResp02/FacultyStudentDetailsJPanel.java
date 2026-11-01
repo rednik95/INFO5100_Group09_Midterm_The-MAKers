@@ -15,6 +15,7 @@ import java.util.Date;
 import javax.swing.JOptionPane;
 
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -49,6 +50,7 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
 
         loadAccount();
         setEditMode(false);
+        loadHobbiesAndInterests();
     }
 
     /**
@@ -185,7 +187,6 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
 
         Person person = student.getPerson();
 
-
         employeeIdTextField.setText(person.getPersonId());
         firstNameTextField.setText(person.getFirstName());
         lastNameTextField.setText(person.getLastName());
@@ -203,7 +204,7 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
         lastNameTextField.setEditable(editing);
         emailTextField.setEditable(editing);
         phoneNumberTextField.setEditable(editing);
-       
+
         departmentTextField.setEditable(editing);
         jobTitleTextField.setEditable(false);
 
@@ -211,6 +212,37 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
 
         this.editing = editing;
 
+    }
+
+    private void loadHobbiesAndInterests() {
+
+        DefaultTableModel model
+                = (DefaultTableModel) jTable2.getModel();
+
+        model.setRowCount(0);
+
+        String studentId = student.getPerson().getPersonId();
+
+        University.Persona.StudentProfile universityStudent = null;
+
+        for (University.Persona.StudentProfile s
+                : business.getPrimaryDepartment()
+                        .getStudentDirectory()
+                        .getStudentList()) {
+
+            if (s.isMatch(studentId)) {
+                universityStudent = s;
+                break;
+            }
+        }
+
+        if (universityStudent == null) {
+            return;
+        }
+
+        for (String item : universityStudent.getHobbiesAndInterests()) {
+            model.addRow(new Object[]{item});
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

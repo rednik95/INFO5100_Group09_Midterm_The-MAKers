@@ -131,6 +131,11 @@ class ConfigureABusiness {
         // Enroll Adam in Anna's INFO5100 course
         dept.RegisterForAClass(adamId, "INFO5100", "Fall2026");
 
+       
+        adamUniversityProfile.addHobbyOrInterest("Photography");
+        adamUniversityProfile.addHobbyOrInterest("Artificial Intelligence");
+        adamUniversityProfile.addHobbyOrInterest("Hiking");
+
         return business;
 
     }

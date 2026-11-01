@@ -17,6 +17,7 @@ public class SeatAssignment {
     Seat seat;
     boolean like; //true means like and false means not like
     CourseLoad courseload;
+    private boolean graded = false;
 
     public SeatAssignment(CourseLoad cl, Seat s) {
         seat = s;
@@ -56,6 +57,19 @@ public class SeatAssignment {
 
     public CourseLoad getCourseLoad() {
         return courseload;
+    }
+
+    public float getGrade() {
+        return grade;
+    }
+
+    public void setGrade(float grade) {
+        this.grade = grade;
+        this.graded = true;
+    }
+
+    public boolean isGraded() {
+        return graded;
     }
 
 }
