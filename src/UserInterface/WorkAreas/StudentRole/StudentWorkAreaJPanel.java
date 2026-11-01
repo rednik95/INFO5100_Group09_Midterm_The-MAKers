@@ -172,6 +172,16 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
 
     private void jButton4IdentifyResourceAssetsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4IdentifyResourceAssetsActionPerformed
 
+CourseWorkJPanel courseWorkPanel = new CourseWorkJPanel(business, CardSequencePanel, student);
+    
+    CardSequencePanel.add("CourseWork", courseWorkPanel);
+    
+    java.awt.CardLayout layout = (java.awt.CardLayout) CardSequencePanel.getLayout();
+    layout.show(CardSequencePanel, "CourseWork");
+
+    // Force UI refresh so the panel renders immediately
+    CardSequencePanel.revalidate();
+    CardSequencePanel.repaint();
 
     }//GEN-LAST:event_jButton4IdentifyResourceAssetsActionPerformed
 
@@ -191,22 +201,52 @@ public class StudentWorkAreaJPanel extends javax.swing.JPanel {
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         // TODO add your handling code here:
+             // TODO add your handling code here:
+    GraduationAuditJPanel auditPanel = new GraduationAuditJPanel(business, CardSequencePanel, student);
+    
+    // 2. Add it to the CardSequencePanel WITH a string name ("GraduationAudit")
+    CardSequencePanel.add("GraduationAudit", auditPanel);
+    
+    // 3. Tell the CardLayout to show it using that exact same name
+    java.awt.CardLayout layout = (java.awt.CardLayout) CardSequencePanel.getLayout();
+    layout.show(CardSequencePanel, "GraduationAudit");
+    
+    // 4. Force refresh
+    CardSequencePanel.revalidate();
+    CardSequencePanel.repaint();
 
 
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         // TODO add your handling code here:
-         JOptionPane.showMessageDialog(
-            this,
-            "This feature is not available yet.",
-            "Registration",
-            JOptionPane.INFORMATION_MESSAGE
-    );
+          RegistrationJPanel registrationJPanel = new RegistrationJPanel(
+                business,
+                CardSequencePanel,
+                student
+        );
+        
+        CardSequencePanel.add("RegistrationJPanel", registrationJPanel);
+        
+        ((java.awt.CardLayout) CardSequencePanel.getLayout())
+                .show(CardSequencePanel, "RegistrationJPanel");
+    
+    
 }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         // TODO add your handling code here:
+        
+          ReviewTranscriptJPanel reviewTranscriptJPanel = new ReviewTranscriptJPanel(
+                business,
+                student,
+                CardSequencePanel
+        );
+        
+        CardSequencePanel.add("ReviewTranscriptJPanel", reviewTranscriptJPanel);
+        
+        ((java.awt.CardLayout) CardSequencePanel.getLayout())
+                .show(CardSequencePanel, "ReviewTranscriptJPanel");
     }//GEN-LAST:event_jButton12ActionPerformed
 
 

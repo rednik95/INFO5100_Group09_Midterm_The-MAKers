@@ -203,6 +203,17 @@ public class CreateStudentJPanel extends javax.swing.JPanel {
         );
 
         student.setActivationCode(new String(passwordField.getPassword()));
+        
+            // Mirror the new student into the University model so faculty can see them
+        University.Department.Department dept = business.getPrimaryDepartment();
+        String newId = person.getPersonId();
+
+        if (dept.getStudentDirectory().findStudent(newId) == null) {
+            University.Persona.Person uniPerson = dept.getPersonDirectory().newPerson(newId);
+            University.Persona.StudentProfile uniStudent = dept.getStudentDirectory().newStudentProfile(uniPerson);
+            uniStudent.newCourseLoad("Fall2026");
+            dept.RegisterForAClass(newId, "INFO5100", "Fall2026"); // Anna's course
+        }
 
         javax.swing.JOptionPane.showMessageDialog(
                 this,
