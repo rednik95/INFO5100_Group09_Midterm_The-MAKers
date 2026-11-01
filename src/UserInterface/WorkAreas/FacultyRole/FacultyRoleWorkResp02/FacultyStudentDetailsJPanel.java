@@ -33,24 +33,18 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
     private StudentProfile student;
 
     public FacultyStudentDetailsJPanel(Business bz, JPanel jp, StudentProfile student) {
-        CardSequencePanel = jp;
+
+        this.CardSequencePanel = jp;
         this.business = bz;
         this.student = student;
-
-        this.account = null;
-
-        for (UserAccount ua : business.getUserAccountDirectory().getUserAccountList()) {
-            if (ua.getAssociatedPersonProfile() == student) {
-                this.account = ua;
-                break;
-            }
-        }
 
         initComponents();
 
         loadAccount();
         setEditMode(false);
         loadHobbiesAndInterests();
+        loadTranscript();
+
     }
 
     /**
@@ -94,7 +88,7 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
             }
         });
         add(Back);
-        Back.setBounds(10, 410, 74, 23);
+        Back.setBounds(10, 440, 74, 23);
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jLabel2.setText("Student Profile");
@@ -151,7 +145,7 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(jTable1);
 
         add(jScrollPane1);
-        jScrollPane1.setBounds(10, 250, 500, 70);
+        jScrollPane1.setBounds(10, 250, 500, 90);
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -167,7 +161,7 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
         jScrollPane3.setViewportView(jTable2);
 
         add(jScrollPane3);
-        jScrollPane3.setBounds(10, 330, 500, 70);
+        jScrollPane3.setBounds(10, 350, 500, 80);
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
@@ -242,6 +236,57 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
 
         for (String item : universityStudent.getHobbiesAndInterests()) {
             model.addRow(new Object[]{item});
+        }
+    }
+
+    private void loadTranscript() {
+
+        DefaultTableModel model
+                = (DefaultTableModel) jTable1.getModel();
+
+        model.setRowCount(0);
+
+        String studentId = student.getPerson().getPersonId();
+
+        University.Persona.StudentProfile universityStudent = null;
+
+        for (University.Persona.StudentProfile s
+                : business.getPrimaryDepartment()
+                        .getStudentDirectory()
+                        .getStudentList()) {
+
+            if (s.isMatch(studentId)) {
+                universityStudent = s;
+                break;
+            }
+        }
+
+        if (universityStudent == null) {
+            return;
+        }
+
+        for (University.CourseSchedule.SeatAssignment sa
+                : universityStudent.getCourseList()) {
+
+            String course = sa.getCourseOffer().getCourseNumber();
+            String semester = sa.getCourseLoad().getSemester();
+            int credits = sa.getCreditHours();
+
+            String grade = sa.isGraded()
+                    ? String.valueOf(sa.getGrade())
+                    : "—";
+
+            String status = sa.isGraded()
+                    ? "Graded"
+                    : "In Progress";
+
+            model.addRow(new Object[]{
+                course,
+                semester,
+                credits,
+                grade,
+                status
+            });
         }
     }
 
