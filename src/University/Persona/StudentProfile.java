@@ -19,6 +19,7 @@ public class StudentProfile {
     Person person;
     Transcript transcript;
     EmploymentHistroy employmenthistory;
+    private ArrayList<String> hobbiesAndInterests = new ArrayList<>();
 
     public StudentProfile(Person p) {
 
@@ -54,5 +55,13 @@ public class StudentProfile {
 
         return transcript.getCourseList();
 
+    }
+
+    public ArrayList<String> getHobbiesAndInterests() {
+        return hobbiesAndInterests;
+    }
+
+    public void addHobbyOrInterest(String value) {
+        hobbiesAndInterests.add(value);
     }
 }
