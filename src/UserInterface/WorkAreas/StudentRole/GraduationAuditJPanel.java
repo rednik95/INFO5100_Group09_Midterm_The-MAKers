@@ -19,6 +19,7 @@ public class GraduationAuditJPanel extends javax.swing.JPanel {
     StudentProfile student;
 
     /**
+    /**
      * Creates new form GraduationAudit
      */
     public GraduationAuditJPanel(Business b, JPanel clp, StudentProfile spp) {
