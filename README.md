@@ -50,8 +50,6 @@ The **Digital University System** is a multi-role Java Swing desktop application
 | **Astrid Noizillier** | **Use Case 2:** Faculty Use Case *(Faculty Member)* | `003942977` | `feature-faculty` | `UserInterface.WorkAreas.FacultyRole.*`<br>`UserInterface.AppUtils.AppUtils` |
 | **Mayu Rocha Yamada** | **Use Case 3:** Student Use Case *(Student)* | `003997556` | `feature-student` | `UserInterface.WorkAreas.StudentRole.*`<br>`Business.Profiles.StudentProfile` |
 
-> 💡 *Note: Remember to replace the placeholder NUIDs above with Astrid's and Mayu's NUIDs before final submission.*
-
 ---
 
 ## ⚙️ Installation & Setup Instructions
@@ -207,7 +205,6 @@ When the application starts, `ConfigureABusiness.initialize()` pre-populates sam
 
 ## 🚀 Future Enhancements
 
-* **Persistent Database Storage:** Migrate in-memory `ArrayList` directories (`PersonDirectory`, `UserAccountDirectory`, `StudentDirectory`, `FacultyDirectory`) to a relational database (PostgreSQL/MySQL) or ObjectDB persistence.
 * **Password Hashing & Security:** Integrate BCrypt password hashing instead of plaintext password comparisons in `UserAccount`.
 * **Visual Analytics Dashboard:** Add JavaFX/JFreeChart visualizations for university-wide tuition revenue, course enrollment capacity, and GPA distributions.
 * **Automated Email Notifications:** Send automated welcome emails containing activation codes when an Administrator pre-registers a new student in HR.
