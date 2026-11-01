@@ -22,6 +22,7 @@ import java.util.GregorianCalendar;
 
 import University.Department.Department;
 import University.CourseCatalog.Course;
+import University.CourseSchedule.CourseLoad;
 import University.CourseSchedule.CourseSchedule;
 import University.CourseSchedule.CourseOffer;
 
@@ -93,10 +94,9 @@ class ConfigureABusiness {
                 new GregorianCalendar(2026, Calendar.SEPTEMBER, 15, 14, 30).getTime(),
                 new GregorianCalendar(2026, Calendar.SEPTEMBER, 15, 14, 30).getTime()); /// order products for one of the customers and performed by a sales person
 
-        
         //Bootstrapping University Mode
         Department dept = business.getPrimaryDepartment();
-       
+
         // 1. Create a Course in the Catalog
         Course course1 = dept.newCourse("Application Engineering", "INFO5100", 4);
         // 2. Create a Semester Schedule
@@ -104,6 +104,114 @@ class ConfigureABusiness {
         // 3. Create a Course Offer for that schedule
         CourseOffer offer1 = scheduleFall2026.newCourseOffer("INFO5100");
         offer1.generatSeats(30); // Open 30 seats
+
+        // Test data: Anna teaches INFO5100
+        String annaId = person006.getPersonId();
+
+        // Create Anna in the University model
+        University.Persona.Person annaPerson = dept.getPersonDirectory().newPerson(annaId);
+
+        // Create her University FacultyProfile
+        University.Persona.Faculty.FacultyProfile annaUniversityProfile = dept.getFacultyDirectory().newFacultyProfile(annaPerson);
+
+        // Assign INFO5100 to Anna
+        annaUniversityProfile.AssignAsTeacher(offer1);
+
+        // Create Adam in the University model
+        String adamId = person003.getPersonId();
+
+        University.Persona.Person adamPerson
+                = dept.getPersonDirectory().newPerson(adamId);
+
+        University.Persona.StudentProfile adamUniversityProfile
+                = dept.getStudentDirectory().newStudentProfile(adamPerson);
+
+        // Create Adam's course load for Fall 2026
+        adamUniversityProfile.newCourseLoad("Fall2026");
+
+        // Enroll Adam in Anna's INFO5100 course
+        dept.RegisterForAClass(adamId, "INFO5100", "Fall2026");
+
+        // Academic history for Adam Rollen
+        // All courses are taught by Anna Shnider.
+        // Fall 2025: two completed courses
+        dept.newCourse("Introduction to Information Systems", "INFO5001", 4);
+        dept.newCourse("Application Development Fundamentals", "INFO5101", 4);
+
+        CourseSchedule fall2025 = dept.newCourseSchedule("Fall2025");
+
+        CourseOffer info5001 = fall2025.newCourseOffer("INFO5001");
+        info5001.generatSeats(30);
+        annaUniversityProfile.AssignAsTeacher(info5001);
+
+        CourseOffer info5101 = fall2025.newCourseOffer("INFO5101");
+        info5101.generatSeats(30);
+        annaUniversityProfile.AssignAsTeacher(info5101);
+
+        adamUniversityProfile.newCourseLoad("Fall2025");
+
+        University.CourseSchedule.SeatAssignment grade5001
+                = info5001.assignEmptySeat(
+                        adamUniversityProfile.getCurrentCourseLoad());
+        if (grade5001 != null) {
+            grade5001.setGrade(4.0f);
+        }
+
+        University.CourseSchedule.SeatAssignment grade5101
+                = info5101.assignEmptySeat(
+                        adamUniversityProfile.getCurrentCourseLoad());
+        if (grade5101 != null) {
+            grade5101.setGrade(3.3f);
+        }
+
+        // Spring 2026: two completed courses
+        dept.newCourse("Data Management and Database Design", "DAMG6210", 4);
+        dept.newCourse("Information Systems Design", "INFO6205", 4);
+
+        CourseSchedule spring2026 = dept.newCourseSchedule("Spring2026");
+
+        CourseOffer damg6210 = spring2026.newCourseOffer("DAMG6210");
+        damg6210.generatSeats(30);
+        annaUniversityProfile.AssignAsTeacher(damg6210);
+
+        CourseOffer info6205 = spring2026.newCourseOffer("INFO6205");
+        info6205.generatSeats(30);
+        annaUniversityProfile.AssignAsTeacher(info6205);
+
+        adamUniversityProfile.newCourseLoad("Spring2026");
+
+        University.CourseSchedule.SeatAssignment grade6210
+                = damg6210.assignEmptySeat(
+                        adamUniversityProfile.getCurrentCourseLoad());
+        if (grade6210 != null) {
+            grade6210.setGrade(3.7f);
+        }
+
+        University.CourseSchedule.SeatAssignment grade6205
+                = info6205.assignEmptySeat(
+                        adamUniversityProfile.getCurrentCourseLoad());
+        if (grade6205 != null) {
+            grade6205.setGrade(3.0f);
+        }
+
+        // Fall 2026: second ongoing course
+        dept.newCourse("Web Design and User Experience", "INFO6150", 4);
+
+        CourseOffer info6150
+                = scheduleFall2026.newCourseOffer("INFO6150");
+        info6150.generatSeats(30);
+        annaUniversityProfile.AssignAsTeacher(info6150);
+
+        CourseLoad adamFall2026
+                = adamUniversityProfile.getCourseLoadBySemester("Fall2026");
+
+        if (adamFall2026 != null) {
+            info6150.assignEmptySeat(adamFall2026);
+        }
+
+        adamUniversityProfile.addHobbyOrInterest("Photography");
+        adamUniversityProfile.addHobbyOrInterest("Artificial Intelligence");
+        adamUniversityProfile.addHobbyOrInterest("Hiking");
 
         return business;
 

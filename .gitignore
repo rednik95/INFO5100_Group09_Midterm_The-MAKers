@@ -1,7 +1,5 @@
+
 /build/
-src/.DS_Store
+/dist/
 .DS_Store
 nbproject/private/private.properties
-src/.DS_Store
-src/UserInterface/.DS_Store
-src/UserInterface/WorkAreas/.DS_Store

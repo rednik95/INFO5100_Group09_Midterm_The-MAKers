@@ -27,10 +27,12 @@ public class CourseSchedule {
 
     }
 
-    public CourseOffer newCourseOffer(String  n) {
+    public CourseOffer newCourseOffer(String n) {
 
         Course c = coursecatalog.getCourseByNumber(n);
-        if(c==null) return null;
+        if (c == null) {
+            return null;
+        }
         CourseOffer co;
         co = new CourseOffer(c);
         schedule.add(co);
@@ -56,6 +58,14 @@ public class CourseSchedule {
 
         }
         return sum;
+    }
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public ArrayList<CourseOffer> getCourseOffers() {
+        return schedule;
     }
 
 }
