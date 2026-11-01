@@ -5,43 +5,66 @@
 package UserInterface.WorkAreas.FacultyRole.FacultyRoleWorkResp02;
 
 import Business.Business;
+import Business.Profiles.FacultyProfile;
 import University.CourseCatalog.Course;
 import University.CourseSchedule.CourseOffer;
 import University.CourseSchedule.CourseSchedule;
+import University.Department.Department;
+import java.awt.CardLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author astri
+ * @author Astrid Noizillier
  */
 public class FacultyCourseDetailsJPanel extends javax.swing.JPanel {
 
     private Business business;
     private JPanel CardSequencePanel;
     private Course selectedCourse;
+    private FacultyProfile facultyProfile;
 
     /**
      * Creates new form FacultyCourseDetailsJPanel
      */
-    public FacultyCourseDetailsJPanel(Business bz, JPanel jp, Course course) {
+    public FacultyCourseDetailsJPanel(Business bz, JPanel jp, Course course, FacultyProfile fp) {
         initComponents();
 
         this.business = bz;
         this.CardSequencePanel = jp;
         this.selectedCourse = course;
+        this.facultyProfile = fp;
 
-        courseIdTextField.setText(selectedCourse.getCOurseNumber());
-        courseNameTextField.setText(selectedCourse.getName());
-        creditTextField.setText(String.valueOf(selectedCourse.getCredits()));
-        priceTextField.setText(String.valueOf(selectedCourse.getCoursePrice()));
+        jLabel2.setText(course == null ? "Create Course" : "Course Details");
 
-        courseIdTextField.setEditable(false);
-        courseNameTextField.setEditable(false);
-        creditTextField.setEditable(false);
-        priceTextField.setEditable(false);
+        if (course == null) {
+            courseIdTextField.setEditable(true);
+            courseNameTextField.setEditable(true);
+            creditTextField.setEditable(true);
+            priceTextField.setEditable(false);
 
-        refreshSemesterTable();
+            jPanel2.setVisible(false); // Pas encore d'offres
+            editButton.setVisible(false);
+            Next.setEnabled(true);
+
+        } else {
+            courseIdTextField.setText(course.getCOurseNumber());
+            courseNameTextField.setText(course.getName());
+            creditTextField.setText(String.valueOf(course.getCredits()));
+            priceTextField.setText(String.valueOf(course.getCoursePrice()));
+
+            courseIdTextField.setEditable(false);
+            courseNameTextField.setEditable(false);
+            creditTextField.setEditable(false);
+            priceTextField.setEditable(false);
+
+            editButton.setEnabled(true);
+            Next.setEnabled(false);
+
+            refreshSemesterTable();
+        }
     }
 
     /**
@@ -117,11 +140,23 @@ public class FacultyCourseDetailsJPanel extends javax.swing.JPanel {
 
         jButton1.setText("Delete Semester");
         jButton1.setToolTipText("");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Add Semester");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
+            }
+        });
+
+        Back.setText("<< Back");
+        Back.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BackActionPerformed(evt);
             }
         });
 
@@ -142,7 +177,12 @@ public class FacultyCourseDetailsJPanel extends javax.swing.JPanel {
                         .addComponent(jButton1)
                         .addGap(83, 83, 83))))
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(Back)
+                        .addGap(86, 86, 86))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -156,15 +196,10 @@ public class FacultyCourseDetailsJPanel extends javax.swing.JPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Back)
                 .addContainerGap())
         );
-
-        Back.setText("<< Back");
-        Back.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BackActionPerformed(evt);
-            }
-        });
 
         Next.setText("Save");
         Next.addActionListener(new java.awt.event.ActionListener() {
@@ -185,6 +220,12 @@ public class FacultyCourseDetailsJPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(editButton, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(Next, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(73, 73, 73))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(0, 0, Short.MAX_VALUE)
@@ -192,60 +233,279 @@ public class FacultyCourseDetailsJPanel extends javax.swing.JPanel {
                         .addGroup(layout.createSequentialGroup()
                             .addGap(1, 1, 1)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(Back)
-                            .addGap(406, 406, 406)
-                            .addComponent(Next, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGap(0, 0, Short.MAX_VALUE)))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(244, 244, 244)
-                    .addComponent(editButton)
-                    .addContainerGap(246, Short.MAX_VALUE)))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 490, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGap(0, 10, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(178, Short.MAX_VALUE)
+                .addContainerGap(217, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Next)
+                    .addComponent(editButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addGap(0, 24, Short.MAX_VALUE)
                     .addComponent(jLabel2)
                     .addGap(12, 12, 12)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(168, 168, 168)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(Back)
-                        .addComponent(Next))
-                    .addGap(0, 0, Short.MAX_VALUE)))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(175, 175, 175)
-                    .addComponent(editButton)
-                    .addContainerGap(175, Short.MAX_VALUE)))
+                    .addGap(0, 264, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
 
+        refreshCoursesTable();
+
+        CardSequencePanel.remove(this);
+
+        ((CardLayout) CardSequencePanel.getLayout())
+                .previous(CardSequencePanel);
 
     }//GEN-LAST:event_BackActionPerformed
 
     private void NextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextActionPerformed
+        if (selectedCourse == null) {
 
+            String courseId = courseIdTextField.getText().trim();
+            String courseName = courseNameTextField.getText().trim();
+
+            int credits;
+
+            try {
+                credits = Integer.parseInt(creditTextField.getText().trim());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Invalid credits.");
+                return;
+            }
+
+            if (courseId.isEmpty() || courseName.isEmpty() || credits <= 0) {
+                JOptionPane.showMessageDialog(this, "Please enter valid course information.");
+                return;
+            }
+
+            if (business.getPrimaryDepartment().getCourseCatalog()
+                    .getCourseByNumber(courseId) != null) {
+                JOptionPane.showMessageDialog(this, "Course ID already exists.");
+                return;
+            }
+            String semester = JOptionPane.showInputDialog(this, "Semester:");
+
+            if (semester == null || semester.trim().isEmpty()) {
+                return;
+            }
+            semester = semester.trim();
+
+            String seatsText = JOptionPane.showInputDialog(this, "Number of seats:");
+
+            if (seatsText == null) {
+                return;
+            }
+
+            int seats;
+            try {
+                seats = Integer.parseInt(seatsText.trim());
+                if (seats <= 0) {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Invalid number of seats.");
+                return;
+            }
+            Department dept = business.getPrimaryDepartment();
+
+            selectedCourse = dept.newCourse(courseName, courseId, credits);
+
+            CourseSchedule schedule = dept.getCourseSchedule(semester);
+
+            if (schedule == null) {
+                schedule = dept.newCourseSchedule(semester);
+            }
+
+            CourseOffer offer = schedule.newCourseOffer(courseId);
+            offer.generatSeats(seats);
+
+            String annaId = facultyProfile.getPerson().getPersonId();
+
+            University.Persona.Faculty.FacultyProfile anna
+                    = dept.getFacultyDirectory().findTeachingFaculty(annaId);
+
+            anna.AssignAsTeacher(offer);
+
+            /*selectedCourse = business.getPrimaryDepartment()
+                    .newCourse(courseName, courseId, credits);*/
+            courseIdTextField.setEditable(false);
+            courseNameTextField.setEditable(false);
+            creditTextField.setEditable(false);
+
+            priceTextField.setText(
+                    String.valueOf(selectedCourse.getCoursePrice())
+            );
+
+            //jLabel2.setText("Course Details");
+            jPanel2.setVisible(true);
+            editButton.setVisible(true);
+            editButton.setEnabled(true);
+            Next.setEnabled(false);
+
+            refreshSemesterTable();
+
+            JOptionPane.showMessageDialog(this, "Course created successfully.");
+            return;
+        }
+
+        String courseName = courseNameTextField.getText().trim();
+        String creditsText = creditTextField.getText().trim();
+
+        if (courseName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Course name cannot be empty.");
+            return;
+        }
+
+        int credits;
+
+        try {
+            credits = Integer.parseInt(creditsText);
+
+            if (credits <= 0) {
+                JOptionPane.showMessageDialog(this, "Credits must be greater than zero.");
+                return;
+            }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid number of credits.");
+            return;
+        }
+
+// Update selected course
+        selectedCourse.setName(courseName);
+        selectedCourse.setCredits(credits);
+
+// Refresh calculated price
+        priceTextField.setText(
+                String.valueOf(selectedCourse.getCoursePrice())
+        );
+
+// Lock fields again
+        courseNameTextField.setEditable(false);
+        creditTextField.setEditable(false);
+
+        editButton.setEnabled(true);
+        Next.setEnabled(false);
+
+        JOptionPane.showMessageDialog(this, "Course updated successfully.");
 
     }//GEN-LAST:event_NextActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
+        courseNameTextField.setEditable(true);
+        creditTextField.setEditable(true);
 
+        editButton.setEnabled(false);
+        Next.setEnabled(true);
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        String semester = JOptionPane.showInputDialog(
+                this, "Semester (e.g. Spring2027):");
+
+        if (semester == null || semester.trim().isEmpty()) {
+            return;
+        }
+
+        semester = semester.trim();
+
+        String seatsInput = JOptionPane.showInputDialog(
+                this, "Number of seats:");
+
+        if (seatsInput == null) {
+            return;
+        }
+
+        int seats;
+
+        try {
+            seats = Integer.parseInt(seatsInput.trim());
+            if (seats <= 0) {
+                throw new NumberFormatException();
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Invalid number of seats.");
+            return;
+        }
+
+        Department dept = business.getPrimaryDepartment();
+
+        CourseSchedule schedule = dept.getCourseSchedule(semester);
+
+        if (schedule == null) {
+            schedule = dept.newCourseSchedule(semester);
+        }
+
+        if (schedule.getCourseOfferByNumber(selectedCourse.getCOurseNumber()) != null) {
+            JOptionPane.showMessageDialog(this,
+                    "This course already exists for this semester.");
+            return;
+        }
+
+        CourseOffer offer = schedule.newCourseOffer(
+                selectedCourse.getCOurseNumber());
+
+        if (offer == null) {
+            JOptionPane.showMessageDialog(this, "Unable to create offering.");
+            return;
+        }
+
+        offer.generatSeats(seats);
+
+        refreshSemesterTable();
+
+        JOptionPane.showMessageDialog(this, "Semester added successfully.");
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int selectedRow = jTable1.getSelectedRow();
+
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this, "Please select a semester.");
+            return;
+        }
+
+        int modelRow = jTable1.convertRowIndexToModel(selectedRow);
+        String semester = jTable1.getModel()
+                .getValueAt(modelRow, 0).toString();
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Delete offering for " + semester + "?",
+                "Confirm deletion",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        CourseSchedule schedule = business.getPrimaryDepartment()
+                .getCourseSchedule(semester);
+
+        if (schedule != null) {
+            CourseOffer offer = schedule.getCourseOfferByNumber(
+                    selectedCourse.getCOurseNumber());
+
+            if (offer != null) {
+                schedule.getCourseOffers().remove(offer);
+            }
+        }
+
+        refreshSemesterTable();
+
+        JOptionPane.showMessageDialog(this, "Semester offering deleted.");
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void refreshSemesterTable() {
 
@@ -268,6 +528,29 @@ public class FacultyCourseDetailsJPanel extends javax.swing.JPanel {
 
                     model.addRow(row);
                 }
+            }
+        }
+
+        editButton.setEnabled(true);
+        Next.setEnabled(false);
+
+        courseIdTextField.setEditable(false);
+        courseNameTextField.setEditable(false);
+        creditTextField.setEditable(false);
+        priceTextField.setEditable(false);
+    }
+
+    private void refreshCoursesTable() {
+
+        for (java.awt.Component component : CardSequencePanel.getComponents()) {
+
+            if (component instanceof FacultyManageCoursesJPanel) {
+
+                FacultyManageCoursesJPanel panel
+                        = (FacultyManageCoursesJPanel) component;
+
+                panel.refreshTable("");
+                break;
             }
         }
     }

@@ -35,7 +35,7 @@ public class FacultyManageCoursesJPanel extends javax.swing.JPanel {
         this.CardSequencePanel = jp;
         this.facultyProfile = fp;
 
-        refreshTable();
+        refreshTable("");
     }
 
     /**
@@ -182,92 +182,143 @@ public class FacultyManageCoursesJPanel extends javax.swing.JPanel {
 
     private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
 
+        int selectedRow = coursesTable.getSelectedRow();
 
-    int selectedRow = coursesTable.getSelectedRow();
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this, "Please select a course.");
+            return;
+        }
 
-    if (selectedRow < 0) {
-        JOptionPane.showMessageDialog(this, "Please select a course.");
-        return;
-    }
+        String courseId = coursesTable.getValueAt(selectedRow, 0).toString();
 
-    String courseId = coursesTable.getValueAt(selectedRow, 0).toString();
+        Course selectedCourse = business.getPrimaryDepartment()
+                .getCourseCatalog()
+                .getCourseByNumber(courseId);
 
-    Course selectedCourse = business.getPrimaryDepartment()
-            .getCourseCatalog()
-            .getCourseByNumber(courseId);
+        FacultyCourseDetailsJPanel panel
+                = new FacultyCourseDetailsJPanel(
+                        business,
+                        CardSequencePanel,
+                        selectedCourse,
+                        facultyProfile
+                );
 
-    FacultyCourseDetailsJPanel panel =
-            new FacultyCourseDetailsJPanel(
-                    business,
-                    CardSequencePanel,
-                    selectedCourse
-            );
+        CardSequencePanel.add("FacultyCourseDetails", panel);
 
-    CardSequencePanel.add("FacultyCourseDetails", panel);
-
-    ((java.awt.CardLayout) CardSequencePanel.getLayout())
-            .show(CardSequencePanel, "FacultyCourseDetails");
+        ((java.awt.CardLayout) CardSequencePanel.getLayout())
+                .show(CardSequencePanel, "FacultyCourseDetails");
 
     }//GEN-LAST:event_btnModifyActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        /*selectedFaculty = null;
-        refreshTable(searchTextField.getText());*/
+        refreshTable(searchTextField.getText().trim());
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void coursesTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_coursesTableMousePressed
 
-        // Get selected row index
-        /*int selectedrow = UserAccountTable.getSelectedRow();
-
-        // Guard against no selection
-        if (selectedrow < 0) {
-            return;
-        }
-
-        // Extract FacultyProfile from col 0
-        selectedFaculty = (FacultyProfile) UserAccountTable.getValueAt(selectedrow, 0);*/
     }//GEN-LAST:event_coursesTableMousePressed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        int row = coursesTable.getSelectedRow();
 
-       
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Please select a course.");
+            return;
+        }
+
+        String courseId = coursesTable.getValueAt(row, 0).toString();
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Remove " + courseId + " from your courses?",
+                "Confirm removal",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        String annaId = facultyProfile.getPerson().getPersonId();
+
+        University.Persona.Faculty.FacultyProfile anna
+                = business.getPrimaryDepartment()
+                        .getFacultyDirectory()
+                        .findTeachingFaculty(annaId);
+
+        if (anna == null) {
+            return;
+        }
+
+        anna.getFacultyAssignments().removeIf(assignment
+                -> assignment.getCourseOffer()
+                        .getCourseNumber().equals(courseId)
+        );
+
+        refreshTable(searchTextField.getText().trim());
+
+        JOptionPane.showMessageDialog(this, "Course removed successfully.");
 
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
 
+        FacultyCourseDetailsJPanel panel
+                = new FacultyCourseDetailsJPanel(
+                        business,
+                        CardSequencePanel,
+                        null,
+                        facultyProfile
+                );
+
+        CardSequencePanel.add("FacultyCreateCourse", panel);
+
+        ((java.awt.CardLayout) CardSequencePanel.getLayout())
+                .show(CardSequencePanel, "FacultyCreateCourse");
     }//GEN-LAST:event_btnCreateActionPerformed
 
-    private void refreshTable() {
+    public void refreshTable(String search) {
 
-        DefaultTableModel model = (DefaultTableModel) coursesTable.getModel();
+        DefaultTableModel model
+                = (DefaultTableModel) coursesTable.getModel();
         model.setRowCount(0);
 
         String annaId = facultyProfile.getPerson().getPersonId();
 
-        University.Persona.Faculty.FacultyProfile annaUniversityProfile
+        University.Persona.Faculty.FacultyProfile anna
                 = business.getPrimaryDepartment()
                         .getFacultyDirectory()
                         .findTeachingFaculty(annaId);
 
-        if (annaUniversityProfile == null) {
+        if (anna == null) {
             return;
         }
 
-        for (FacultyAssignment assignment : annaUniversityProfile.getFacultyAssignments()) {
+        java.util.HashSet<String> displayed = new java.util.HashSet<>();
+
+        for (FacultyAssignment assignment : anna.getFacultyAssignments()) {
 
             CourseOffer offer = assignment.getCourseOffer();
+            Course course = offer.getSubjectCourse();
 
-            Object[] row = {
-                offer.getCourseNumber(),
-                offer.getSubjectCourse().getName(),
-                "",
-                offer.getCreditHours(),
-                offer.getSubjectCourse().getCoursePrice()
-            };
+            String id = course.getCOurseNumber();
+            String name = course.getName();
 
-            model.addRow(row);
+            if (!id.toLowerCase().contains(search.toLowerCase())
+                    && !name.toLowerCase().contains(search.toLowerCase())) {
+                continue;
+            }
+
+            if (!displayed.add(id)) {
+                continue;
+            }
+
+            model.addRow(new Object[]{
+                id,
+                name,
+                course.getCredits(),
+                course.getCoursePrice()
+            });
         }
     }
 
