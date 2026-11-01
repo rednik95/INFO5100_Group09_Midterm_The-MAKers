@@ -17,6 +17,7 @@ import UserInterface.WorkAreas.AdminRole.AdministerUserAccountsWorkResp.AdminUse
 import UserInterface.WorkAreas.AdminRole.ManagePersonnelWorkResp.ManagePersonsJPanel;
 import UserInterface.WorkAreas.FacultyRole.FacultyRoleWorkResp02.FacultyManageCoursesJPanel;
 import UserInterface.WorkAreas.FacultyRole.FacultyRoleWorkResp02.FacultyManageStudentsJPanel;
+import UserInterface.WorkAreas.FacultyRole.FacultyRoleWorkResp02.FacultyPerformanceReportJPanel;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -197,7 +198,13 @@ public class FacultyWorkAreaJPanel extends javax.swing.JPanel {
 }//GEN-LAST:event_jButton6IdentifyEventsActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // TODO add your handling code here:
+       
+        FacultyPerformanceReportJPanel panel = new FacultyPerformanceReportJPanel(business, CardSequencePanel, facultyProfile);
+
+        CardSequencePanel.add("FacultyPerformanceReportJPanel", panel);
+
+        ((java.awt.CardLayout) CardSequencePanel.getLayout())
+                .show(CardSequencePanel, "FacultyPerformanceReportJPanel");
 
 }//GEN-LAST:event_jButton11ActionPerformed
 
