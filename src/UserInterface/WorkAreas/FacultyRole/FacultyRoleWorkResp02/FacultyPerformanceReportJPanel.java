@@ -26,6 +26,10 @@ public class FacultyPerformanceReportJPanel extends javax.swing.JPanel {
     Business business;
     FacultyProfile facultyProfile;
 
+    private final java.util.ArrayList<University.CourseSchedule.SeatAssignment> displayedAssignments = new java.util.ArrayList<>();
+
+    private boolean refreshingTable = false;
+
     /**
      * Creates new form FacultyManageCoursesJPanel
      */
@@ -36,6 +40,28 @@ public class FacultyPerformanceReportJPanel extends javax.swing.JPanel {
         this.CardSequencePanel = jp;
         this.facultyProfile = fp;
 
+        performanceTable.setModel(new DefaultTableModel(
+                new Object[]{
+                    "Student ID", "Student Name", "Course",
+                    "Semester", "Credits", "Grade", "Status"
+                }, 0) {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 5;
+            }
+        });
+
+        performanceTable.getModel().addTableModelListener(e -> {
+            if (refreshingTable
+                    || e.getType() != javax.swing.event.TableModelEvent.UPDATE
+                    || e.getColumn() != 5
+                    || e.getFirstRow() < 0) {
+                return;
+            }
+
+            saveGrade(e.getFirstRow());
+        });
         refreshTable("");
     }
 
@@ -58,6 +84,7 @@ public class FacultyPerformanceReportJPanel extends javax.swing.JPanel {
         searchButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         performanceTable = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(0, 153, 153));
         setLayout(null);
@@ -152,6 +179,15 @@ public class FacultyPerformanceReportJPanel extends javax.swing.JPanel {
 
         add(jScrollPane1);
         jScrollPane1.setBounds(30, 110, 550, 130);
+
+        jButton1.setText("Set Grade");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        add(jButton1);
+        jButton1.setBounds(365, 250, 100, 23);
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
@@ -209,11 +245,89 @@ public class FacultyPerformanceReportJPanel extends javax.swing.JPanel {
 
     }//GEN-LAST:event_performanceTableMousePressed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int selectedRow = performanceTable.getSelectedRow();
+
+        if (selectedRow < 0) {
+            JOptionPane.showMessageDialog(this, "Please select a student.");
+            return;
+        }
+
+        int modelRow = performanceTable.convertRowIndexToModel(selectedRow);
+
+        University.CourseSchedule.SeatAssignment assignment
+                = displayedAssignments.get(modelRow);
+
+        String input = JOptionPane.showInputDialog(
+                this,
+                "Enter grade (0.0 - 4.0):",
+                assignment.isGraded() ? String.valueOf(assignment.getGrade()) : ""
+        );
+
+        if (input == null) {
+            return; // Cancel
+        }
+
+        try {
+            float grade = Float.parseFloat(input.trim());
+
+            if (!Float.isFinite(grade) || grade < 0.0f || grade > 4.0f) {
+                throw new NumberFormatException();
+            }
+
+            assignment.setGrade(grade);
+
+            refreshTable(searchTextField.getText().trim());
+
+            JOptionPane.showMessageDialog(this, "Grade saved successfully.");
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Please enter a valid grade between 0.0 and 4.0.");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+    private void saveGrade(int row) {
+
+        if (row < 0 || row >= displayedAssignments.size()) {
+            return;
+        }
+
+        University.CourseSchedule.SeatAssignment assignment
+                = displayedAssignments.get(row);
+
+        Object value = performanceTable.getModel().getValueAt(row, 5);
+
+        float grade;
+
+        try {
+            grade = Float.parseFloat(value.toString().trim());
+
+            if (!Float.isFinite(grade) || grade < 0.0f || grade > 4.0f) {
+                throw new NumberFormatException();
+            }
+
+        } catch (NumberFormatException | NullPointerException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Grade must be a number between 0.0 and 4.0.");
+
+            refreshTable(searchTextField.getText().trim());
+            return;
+        }
+
+        assignment.setGrade(grade);
+
+        refreshTable(searchTextField.getText().trim());
+
+        JOptionPane.showMessageDialog(this, "Grade saved successfully.");
+    }
+
     public void refreshTable(String search) {
 
         DefaultTableModel model
                 = (DefaultTableModel) performanceTable.getModel();
 
+        refreshingTable = true;
+        displayedAssignments.clear();
         model.setRowCount(0);
 
         University.Department.Department dept
@@ -225,6 +339,7 @@ public class FacultyPerformanceReportJPanel extends javax.swing.JPanel {
                 = dept.getFacultyDirectory().findTeachingFaculty(facultyId);
 
         if (faculty == null) {
+            refreshingTable = false;
             return;
         }
 
@@ -302,13 +417,16 @@ public class FacultyPerformanceReportJPanel extends javax.swing.JPanel {
                     grade,
                     status
                 });
+                displayedAssignments.add(sa);
             }
         }
+        refreshingTable = false;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
     private javax.swing.JButton btnModify;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel2;
