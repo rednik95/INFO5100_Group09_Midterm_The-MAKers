@@ -63,6 +63,7 @@ public class Transcript {
         }
         return sum;
     }
+
     //sat index means student rated their courses with likes;
     public int getStudentSatifactionIndex() {
         ArrayList<SeatAssignment> courseregistrations = getCourseList();
@@ -91,4 +92,101 @@ public class Transcript {
 
     }
 
+    /**
+     * Calculates the cumulative GPA using graded courses only. Each grade is
+     * weighted by the course credit hours.
+     *
+     * @author Astrid Noizillier
+     */
+    public double calculateGPA() {
+        double totalGradePoints = 0;
+        int gradedCredits = 0;
+
+        for (SeatAssignment sa : getCourseList()) {
+            if (sa == null || !sa.isGraded()) {
+                continue;
+            }
+
+            int credits = sa.getCreditHours();
+            totalGradePoints += sa.getGrade() * credits;
+            gradedCredits += credits;
+        }
+
+        if (gradedCredits == 0) {
+            return 0.0;
+        }
+
+        return totalGradePoints / gradedCredits;
+    }
+
+    /**
+     * Returns credits earned from graded courses. Assumes that a positive grade
+     * represents a passed course.
+     *
+     * @author Astrid Noizillier
+     */
+    public int getEarnedCredits() {
+        int credits = 0;
+
+        for (SeatAssignment sa : getCourseList()) {
+            if (sa != null && sa.isGraded()
+                    && sa.getGrade() > 0) {
+                credits += sa.getCreditHours();
+            }
+        }
+
+        return credits;
+    }
+
+    /**
+     * Returns credits for all enrolled courses.
+     *
+     * @author Astrid Noizillier
+     */
+    public int getTotalEnrolledCredits() {
+        int credits = 0;
+
+        for (SeatAssignment sa : getCourseList()) {
+            if (sa != null) {
+                credits += sa.getCreditHours();
+            }
+        }
+
+        return credits;
+    }
+
+    /**
+     * Counts courses that have received a grade.
+     *
+     * @author Astrid Noizillier
+     */
+    public int getCompletedCoursesCount() {
+        int count = 0;
+
+        for (SeatAssignment sa : getCourseList()) {
+            if (sa != null && sa.isGraded()) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * Determines academic standing using a simplified graduate GPA requirement
+     * of 3.00. This is not an official probation determination.
+     *
+     * @author Astrid Noizillier
+     */
+    public String getAcademicStanding() {
+        if (getCompletedCoursesCount() == 0) {
+            return "Not Yet Evaluated";
+        }
+
+        if (calculateGPA() >= 3.0) {
+            return "Good Standing";
+        }
+
+        return "Below GPA Requirement";
+    }
 }

@@ -44,6 +44,7 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
         setEditMode(false);
         loadHobbiesAndInterests();
         loadTranscript();
+        loadAcademicProgress();
 
     }
 
@@ -73,6 +74,14 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
         jobTitleTextField = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         departmentTextField = new javax.swing.JTextField();
+        creditsProgressLabel = new javax.swing.JLabel();
+        creditsProgressTextField = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        completedCoursesTextField = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        gpaTextField = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        academicStandingTextField = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -88,7 +97,7 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
             }
         });
         add(Back);
-        Back.setBounds(10, 440, 74, 23);
+        Back.setBounds(10, 510, 74, 23);
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jLabel2.setText("Student Profile");
@@ -96,7 +105,7 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
         jLabel2.setBounds(21, 20, 550, 28);
 
         jPanel1.setBackground(new java.awt.Color(0, 153, 153));
-        jPanel1.setLayout(new java.awt.GridLayout(7, 2));
+        jPanel1.setLayout(new java.awt.GridLayout(11, 2));
 
         employeeIdLabel.setText("Person ID");
         jPanel1.add(employeeIdLabel);
@@ -128,8 +137,37 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
         jPanel1.add(jLabel5);
         jPanel1.add(departmentTextField);
 
+        creditsProgressLabel.setText("Credits Earned");
+        jPanel1.add(creditsProgressLabel);
+
+        creditsProgressTextField.setEditable(false);
+        jPanel1.add(creditsProgressTextField);
+
+        jLabel3.setText("Completed Courses");
+        jPanel1.add(jLabel3);
+
+        completedCoursesTextField.setEditable(false);
+        completedCoursesTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                completedCoursesTextFieldActionPerformed(evt);
+            }
+        });
+        jPanel1.add(completedCoursesTextField);
+
+        jLabel4.setText("GPA");
+        jPanel1.add(jLabel4);
+
+        gpaTextField.setEditable(false);
+        jPanel1.add(gpaTextField);
+
+        jLabel1.setText("Academic Standing");
+        jPanel1.add(jLabel1);
+
+        academicStandingTextField.setEditable(false);
+        jPanel1.add(academicStandingTextField);
+
         add(jPanel1);
-        jPanel1.setBounds(20, 60, 490, 170);
+        jPanel1.setBounds(20, 60, 490, 242);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -145,7 +183,7 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(jTable1);
 
         add(jScrollPane1);
-        jScrollPane1.setBounds(10, 250, 500, 90);
+        jScrollPane1.setBounds(10, 310, 500, 100);
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -161,7 +199,7 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
         jScrollPane3.setViewportView(jTable2);
 
         add(jScrollPane3);
-        jScrollPane3.setBounds(10, 350, 500, 80);
+        jScrollPane3.setBounds(10, 420, 500, 80);
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
@@ -176,6 +214,10 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
                 .previous(CardSequencePanel);
 
     }//GEN-LAST:event_BackActionPerformed
+
+    private void completedCoursesTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_completedCoursesTextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_completedCoursesTextFieldActionPerformed
 
     private void loadAccount() {
 
@@ -290,8 +332,57 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
         }
     }
 
+private void loadAcademicProgress() {
+
+    String studentId = student.getPerson().getPersonId();
+
+    University.Persona.StudentProfile universityStudent = null;
+
+    for (University.Persona.StudentProfile s
+            : business.getPrimaryDepartment()
+                    .getStudentDirectory()
+                    .getStudentList()) {
+
+        if (s.isMatch(studentId)) {
+            universityStudent = s;
+            break;
+        }
+    }
+
+    if (universityStudent == null) {
+        return;
+    }
+
+    University.Persona.Transcript transcript =
+            universityStudent.getTranscript();
+
+    if (transcript == null) {
+        return;
+    }
+
+    creditsProgressTextField.setText(
+            transcript.getEarnedCredits()
+            + " / " + transcript.getTotalEnrolledCredits());
+
+    completedCoursesTextField.setText(
+            transcript.getCompletedCoursesCount()
+            + " / " + universityStudent.getCourseList().size());
+
+    gpaTextField.setText(String.format(
+            java.util.Locale.US,
+            "%.2f / 4.00",
+            transcript.calculateGPA()));
+
+    academicStandingTextField.setText(
+            transcript.getAcademicStanding());
+}
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
+    private javax.swing.JTextField academicStandingTextField;
+    private javax.swing.JTextField completedCoursesTextField;
+    private javax.swing.JLabel creditsProgressLabel;
+    private javax.swing.JTextField creditsProgressTextField;
     private javax.swing.JTextField departmentTextField;
     private javax.swing.JLabel emailLabel;
     private javax.swing.JTextField emailTextField;
@@ -299,7 +390,11 @@ public class FacultyStudentDetailsJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField employeeIdTextField;
     private javax.swing.JLabel firstNameLabel;
     private javax.swing.JTextField firstNameTextField;
+    private javax.swing.JTextField gpaTextField;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
