@@ -63,13 +63,14 @@ public class SeatAssignment {
         return grade;
     }
 
-    public void setGrade(float grade) {
-        this.grade = grade;
-        this.graded = true;
-    }
 
     public boolean isGraded() {
         return graded;
+    }
+
+    public void setGrade(float grade) {
+        this.grade = grade;
+        this.graded = true;
     }
 
 }

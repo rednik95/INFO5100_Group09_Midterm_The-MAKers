@@ -53,4 +53,5 @@ public class CourseLoad {
     public String getSemester() {
         return semester;
     }
+
 }
