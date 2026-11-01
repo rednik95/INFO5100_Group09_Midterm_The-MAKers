@@ -93,10 +93,9 @@ class ConfigureABusiness {
                 new GregorianCalendar(2026, Calendar.SEPTEMBER, 15, 14, 30).getTime(),
                 new GregorianCalendar(2026, Calendar.SEPTEMBER, 15, 14, 30).getTime()); /// order products for one of the customers and performed by a sales person
 
-        
         //Bootstrapping University Mode
         Department dept = business.getPrimaryDepartment();
-       
+
         // 1. Create a Course in the Catalog
         Course course1 = dept.newCourse("Application Engineering", "INFO5100", 4);
         // 2. Create a Semester Schedule
@@ -105,6 +104,18 @@ class ConfigureABusiness {
         CourseOffer offer1 = scheduleFall2026.newCourseOffer("INFO5100");
         offer1.generatSeats(30); // Open 30 seats
 
+        // Test data: Anna teaches INFO5100
+        String annaId = person006.getPersonId();
+
+        // Create Anna in the University model
+        University.Persona.Person annaPerson = dept.getPersonDirectory().newPerson(annaId);
+
+        // Create her University FacultyProfile
+        University.Persona.Faculty.FacultyProfile annaUniversityProfile = dept.getFacultyDirectory().newFacultyProfile(annaPerson);
+
+        // Assign INFO5100 to Anna
+        annaUniversityProfile.AssignAsTeacher(offer1);
+        
         return business;
 
     }
